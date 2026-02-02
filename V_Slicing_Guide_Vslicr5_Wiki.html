@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V-Slicing Guide - Vslicr5 Wiki</title>
+    <link rel="shortcut icon" type="image/png" href="wiki.png">
+    <style>
+/* ===== ROOT VARIABLES ===== */
+:root {
+    --gradient-bg: linear-gradient(to bottom, #EDEBD7, #e4edd7);
+    --gradient-header: linear-gradient(to bottom, #9C7A97, #888DA7);
+    --text-primary: #2c3e50;
+    --text-secondary: #555;
+    --text-light: #ffffff;
+    --link-color: #5a4d7a;
+    --link-hover: #7a6d9a;
+    --border-color: #d0d0d0;
+    --code-bg: #f4f4f4;
+    --blockquote-border: #9C7A97;
+    --table-border: #ccc;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* ===== RESET & BASE STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    overflow-x: hidden;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ===== LAYOUT ===== */
+.v1 {
+    background-image: var(--gradient-bg);
+    flex: 1;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+header, footer {
+    background-image: var(--gradient-header);
+    width: 100%;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px var(--shadow);
+    flex-wrap: wrap;
+    min-height: 45px;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* ===== NAVIGATION ===== */
+header a, footer a {
+    text-decoration: none;
+    color: var(--text-light);
+    margin: 8px 15px;
+    font-family: monospace;
+    font-weight: 550;
+    font-size: 14px;
+    transform: scale(1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+header a:hover, footer a:hover {
+    transform: scale(1.1);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+footer a:last-child {
+    cursor: default;
+    opacity: 0.7;
+}
+
+footer a:last-child:hover {
+    transform: scale(1);
+    text-shadow: none;
+}
+
+/* ===== LOGO & HOME PAGE ===== */
+.logo-center {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.logo-center img {
+    width: 100%;
+    height: auto;
+    max-width: 480px;
+}
+
+/* ===== WIKI CONTENT CONTAINER ===== */
+.wiki-container {
+    max-width: 900px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px 50px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px var(--shadow);
+    margin: 0 auto;
+}
+
+/* ===== TYPOGRAPHY ===== */
+.wiki-container h1 {
+    font-size: 2.5em;
+    margin-bottom: 0.5em;
+    color: var(--text-primary);
+    border-bottom: 3px solid var(--blockquote-border);
+    padding-bottom: 10px;
+    font-weight: 700;
+}
+
+.wiki-container h2 {
+    font-size: 2em;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 8px;
+    font-weight: 600;
+}
+
+.wiki-container h3 {
+    font-size: 1.5em;
+    margin-top: 1.3em;
+    margin-bottom: 0.5em;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.wiki-container h4 {
+    font-size: 1.25em;
+    margin-top: 1.2em;
+    margin-bottom: 0.5em;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.wiki-container h5 {
+    font-size: 1.1em;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.wiki-container h6 {
+    font-size: 1em;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-style: italic;
+}
+
+/* ===== PARAGRAPHS & TEXT ===== */
+.wiki-container p {
+    margin-bottom: 1em;
+    line-height: 1.7;
+    color: var(--text-primary);
+    text-align: justify;
+}
+
+.wiki-container p:last-child {
+    margin-bottom: 0;
+}
+
+.wiki-container strong, .wiki-container b {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.wiki-container em, .wiki-container i {
+    font-style: italic;
+}
+
+.wiki-container mark {
+    background-color: #fff3cd;
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+.wiki-container small {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+}
+
+/* ===== LINKS ===== */
+.wiki-container a {
+    color: var(--link-color);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.wiki-container a:hover {
+    color: var(--link-hover);
+    border-bottom-color: var(--link-hover);
+}
+
+/* ===== LISTS ===== */
+.wiki-container ul, .wiki-container ol {
+    margin: 1em 0;
+    padding-left: 2em;
+}
+
+.wiki-container ul li, .wiki-container ol li {
+    margin-bottom: 0.5em;
+    line-height: 1.6;
+}
+
+.wiki-container ul ul, .wiki-container ol ol,
+.wiki-container ul ol, .wiki-container ol ul {
+    margin: 0.5em 0;
+}
+
+/* ===== CODE & PREFORMATTED TEXT ===== */
+.wiki-container code {
+    background-color: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+    color: #c7254e;
+}
+
+.wiki-container pre {
+    background-color: var(--code-bg);
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 1em 0;
+    border-left: 4px solid var(--blockquote-border);
+}
+
+.wiki-container pre code {
+    background: none;
+    padding: 0;
+    color: var(--text-primary);
+}
+
+/* ===== BLOCKQUOTES ===== */
+.wiki-container blockquote {
+    margin: 1.5em 0;
+    padding: 15px 20px;
+    border-left: 5px solid var(--blockquote-border);
+    background-color: rgba(156, 122, 151, 0.05);
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+.wiki-container blockquote p {
+    margin-bottom: 0.5em;
+}
+
+.wiki-container blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* ===== TABLES ===== */
+.wiki-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    background-color: white;
+}
+
+.wiki-container table th,
+.wiki-container table td {
+    border: 1px solid var(--table-border);
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.wiki-container table th {
+    background-color: var(--code-bg);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.wiki-container table tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.wiki-container table tr:hover {
+    background-color: rgba(156, 122, 151, 0.08);
+}
+
+/* ===== HORIZONTAL RULE ===== */
+.wiki-container hr {
+    border: none;
+    border-top: 2px solid var(--border-color);
+    margin: 2em 0;
+}
+
+/* ===== IMAGES ===== */
+.wiki-container img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5em auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* ===== INFO BOXES ===== */
+.info-box, .warning-box, .note-box {
+    padding: 15px 20px;
+    margin: 1.5em 0;
+    border-radius: 5px;
+    border-left: 5px solid;
+}
+
+.info-box {
+    background-color: #d1ecf1;
+    border-left-color: #0c5460;
+    color: #0c5460;
+}
+
+.warning-box {
+    background-color: #fff3cd;
+    border-left-color: #856404;
+    color: #856404;
+}
+
+.note-box {
+    background-color: #e7e7ff;
+    border-left-color: #5a4d7a;
+    color: #5a4d7a;
+}
+
+/* ===== TABLE OF CONTENTS ===== */
+.toc {
+    background-color: var(--code-bg);
+    padding: 20px 25px;
+    margin: 1.5em 0;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+}
+
+.toc h3 {
+    margin-top: 0;
+    margin-bottom: 0.8em;
+    font-size: 1.2em;
+}
+
+.toc ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.toc ul li {
+    margin-bottom: 0.4em;
+}
+
+.toc ul ul {
+    padding-left: 1.5em;
+    margin-top: 0.4em;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .wiki-container {
+        padding: 30px 25px;
+    }
+    
+    .wiki-container h1 {
+        font-size: 2em;
+    }
+    
+    .wiki-container h2 {
+        font-size: 1.6em;
+    }
+    
+    header a, footer a {
+        margin: 5px 10px;
+        font-size: 12px;
+    }
+    
+    .logo-center {
+        max-width: 320px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wiki-container {
+        padding: 20px 15px;
+    }
+    
+    header, footer {
+        padding: 0 10px;
+    }
+    
+    header a, footer a {
+        margin: 5px 8px;
+        font-size: 11px;
+    }
+}
+.v1 {
+  background-image: url('bg.png');
+}
+/* ===== V1 CONTAINER ===== */
+.v1 {
+    background-image: url('bg.png');
+    flex: 1;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* ===== FNF LOGO ===== */
+.logo-fnf {
+    transition: transform 0.1s ease-in-out;
+    width: auto;
+    max-width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 25px auto; /* Centered with space below */
+    will-change: transform; 
+    transform: scale(1); /* */
+}
+.logo-fnf:hover {
+    transform: scale(1.1); /* */
+}
+
+.logo-fnf img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .logo-fnf {
+        max-width: 300px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-fnf {
+        max-width: 200px;
+        margin-bottom: 10px;
+    }
+}
+    #quoteWrapper {
+      position: relative;
+      width: 100vw;
+      height: 30px;
+      top:-40px;
+      overflow: hidden;
+      background: #222;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    #quoteBox {
+      position: absolute;
+      white-space: nowrap;
+      font-weight: bold;
+      background: #222;
+      color: white;
+      transform: translateX(100%);
+      user-select: none;
+      cursor: default;
+      font-size: 1.0em;
+      font-family: monospace;
+    }
+#quoteBox {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.quote-sticker {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  vertical-align: middle;
+  pointer-events: none;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html">V-Slicing</a>
+        <a href="charting.html">charting</a>
+        <a href="templates.html">templates</a>
+        <a href="about.html">about vslicr5</a>
+        <a href="tutorials.html">tutorials</a>
+        <a href="profile.html">profile</a>
+    </header>
+    
+    <main>
+        <div class="v1">
+<!-- MARQUEE HEADING SHII -->
+  <div id="quoteWrapper">
+    <p id="quoteBox">Loading...</p>
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const wrapper = document.getElementById("quoteWrapper");
+  const box = document.getElementById("quoteBox");
+
+  let quotes = [
+    "Yeezy Night Funkin' Now Avaliable on Gamebanana! https://gamebanana.com/mods/636667"
+  ];
+
+  let pos = 0;
+  let lastTime = null;
+
+  const baseSpeed = 120;
+  const slowSpeed = 70;
+  const slowerSpeed = 30;
+
+  let currentSpeed = baseSpeed;
+  let isHoveringBox = false;
+  let isHoveringText = false;
+  let isMouseDown = false;
+
+  /* ==========================================
+     Quote Image Parser
+     Supports:
+     :name:
+     :folder/name:
+     :folder/name.gif:
+     ========================================== */
+  function parseQuoteWithImages(text) {
+    return text.replace(
+      /:([a-zA-Z0-9_\-\/]+(?:\.(png|gif|webp|jpg|jpeg))?):/gi,
+      (match, path, ext) => {
+        // Prevent path traversal
+        if (path.includes("..")) return match;
+
+        // Explicit extension → use as-is
+        if (ext) {
+          return `
+            <img
+              src="https://raw.githubusercontent.com/01110010-00110101/01110010-00110101.github.io/main/system/images/stickers/${path}"
+              class="quote-sticker"
+              alt="${path}"
+              loading="lazy"
+            >
+          `;
+        }
+
+        // No extension → png fallback to gif
+        return `
+          <img
+            src="https://raw.githubusercontent.com/01110010-00110101/01110010-00110101.github.io/main/system/images/stickers/${path}.png"
+            class="quote-sticker"
+            alt="${path}"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/01110010-00110101/01110010-00110101.github.io/main/system/images/stickers/${path}.gif';"
+          >
+        `;
+      }
+    );
+  }
+
+  function setQuote() {
+    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+
+    box.innerHTML = parseQuoteWithImages(quote);
+
+    pos = wrapper.offsetWidth;
+    box.style.transform = `translateX(${pos}px)`;
+  }
+
+  function updateSpeed() {
+    if (isMouseDown) currentSpeed = 0;
+    else if (isHoveringText) currentSpeed = slowerSpeed;
+    else if (isHoveringBox) currentSpeed = slowSpeed;
+    else currentSpeed = baseSpeed;
+  }
+
+  function animate(time) {
+    if (lastTime !== null) {
+      const dt = (time - lastTime) / 1000;
+      pos -= currentSpeed * dt;
+      box.style.transform = `translateX(${pos}px)`;
+
+      if (pos + box.offsetWidth < 0) {
+        setQuote();
+      }
+    }
+    lastTime = time;
+    requestAnimationFrame(animate);
+  }
+
+  function start() {
+    setQuote();
+    requestAnimationFrame(animate);
+  }
+
+  wrapper.addEventListener("mouseenter", () => {
+    isHoveringBox = true;
+    updateSpeed();
+  });
+
+  wrapper.addEventListener("mouseleave", () => {
+    isHoveringBox = false;
+    isHoveringText = false;
+    updateSpeed();
+  });
+
+  box.addEventListener("mouseenter", () => {
+    isHoveringText = true;
+    updateSpeed();
+  });
+
+  box.addEventListener("mouseleave", () => {
+    isHoveringText = false;
+    updateSpeed();
+  });
+
+  wrapper.addEventListener("mousedown", () => {
+    isMouseDown = true;
+    updateSpeed();
+  });
+
+  wrapper.addEventListener("mouseup", () => {
+    isMouseDown = false;
+    updateSpeed();
+  });
+
+  start();
+});
+</script>
+                 <div class="logo-fnf" title="click me to play music!">
+                  <img src="fnf.png"/>
+                 </div>
+            <div class="wiki-container">
+                <h1>V-Slicing: FNF Polymod Guide</h1>
+                
+                <p>Welcome to the comprehensive guide for <strong>V-Slicing</strong> in Friday Night Funkin' Polymod charts. This tutorial will walk you through everything you need to know about V-Slice charting techniques, from basic concepts to advanced implementations.</p>
+                
+                <div class="toc">
+                    <h3>Table of Contents</h3>
+                    <ul>
+                        <li><a href="#introduction">1. Introduction</a></li>
+                        <li><a href="#getting-started">2. Getting Started</a>
+                            <ul>
+                                <li><a href="#setup">2.1 Chart Editor Setup</a></li>
+                                <li><a href="#basic-vslice">2.2 Basic V-Slice Notation</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#advanced">3. Advanced Charting Techniques</a></li>
+                        <li><a href="#reference">4. Note Type Reference</a></li>
+                    </ul>
+                </div>
+                
+                <h2 id="introduction">Introduction</h2>
+                
+                <p>V-Slice is the modern charting format used in <code>Friday Night Funkin' Polymod</code> for creating <em>custom charts</em> and <em>note patterns</em>. It provides enhanced flexibility and features compared to legacy charting formats.</p>
+                
+                <div class="note-box">
+                    <strong>Note:</strong> This guide assumes you have basic knowledge of FNF charting and the Polymod chart editor interface.
+                </div>
+                
+                <h3>What is V-Slice Charting?</h3>
+                
+                <p>V-Slice (Vertical Slice) is a charting system that allows for <mark>precise note placement</mark> and advanced gameplay mechanics. Unlike legacy formats, V-Slice supports custom note types, events, and modular song structures.</p>
+                
+                <h4>Key Features</h4>
+                
+                <ul>
+                    <li><strong>Precision:</strong> Sub-step note placement for complex patterns</li>
+                    <li><strong>Custom Note Types:</strong> Support for mines, warning notes, and special mechanics</li>
+                    <li><strong>Event System:</strong> Built-in camera movement and stage events</li>
+                    <li><strong>Compatibility:</strong> Works with all FNF Polymod engines</li>
+                </ul>
+                
+                <h2 id="getting-started">Getting Started</h2>
+                
+                <h3 id="setup">Chart Editor Setup</h3>
+                
+                <p>To begin charting with V-Slice, you'll need to set up your environment properly:</p>
+                
+                <ol>
+                    <li>Open the FNF Polymod Chart Editor (Press <code>7</code> in-game)</li>
+                    <li>Load your song audio files (Inst and Voices)</li>
+                    <li>Set the BPM and time signature</li>
+                    <li>Configure difficulty settings</li>
+                </ol>
+                
+                <pre><code>{
+  "version": "2.0.0",
+  "scrollSpeed": {
+    "easy": 1.5,
+    "normal": 2.0,
+    "hard": 2.5
+  },
+  "playData": {
+    "characters": {
+      "player": "bf",
+      "opponent": "dad",
+      "girlfriend": "gf"
+    }
+  }
+}</code></pre>
+                
+                <div class="warning-box">
+                    <strong>Warning:</strong> Make sure your audio files are synced properly before placing notes. Use the metronome to verify BPM accuracy.
+                </div>
+                
+                <h3 id="basic-vslice">Basic V-Slice Notation</h3>
+                
+                <p>Here's how to create basic note patterns in V-Slice format:</p>
+                
+                <pre><code>// Standard 4-note pattern
+{
+  "t": 0,      // Time in milliseconds
+  "d": 0,      // Direction (0=Left, 1=Down, 2=Up, 3=Right)
+  "l": 0,      // Length (0 for normal notes, >0 for holds)
+  "p": "normal" // Note kind/type
+}</code></pre>
+                
+                <h4>Note Placement Grid</h4>
+                
+                <p>The chart editor uses a grid system for note placement:</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Direction</th>
+                            <th>Value</th>
+                            <th>Key Bind</th>
+                            <th>Color</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Left</td>
+                            <td>0</td>
+                            <td>A / Left Arrow</td>
+                            <td>Purple</td>
+                        </tr>
+                        <tr>
+                            <td>Down</td>
+                            <td>1</td>
+                            <td>S / Down Arrow</td>
+                            <td>Cyan</td>
+                        </tr>
+                        <tr>
+                            <td>Up</td>
+                            <td>2</td>
+                            <td>W / Up Arrow</td>
+                            <td>Green</td>
+                        </tr>
+                        <tr>
+                            <td>Right</td>
+                            <td>3</td>
+                            <td>D / Right Arrow</td>
+                            <td>Red</td>
+                        </tr>
+
+                        <tr>
+                            <td>Left</td>
+                            <td>4</td>
+                            <td>A / Left Arrow - opponent</td>
+                            <td>Purple</td>
+                        </tr>
+                        <tr>
+                            <td>Down</td>
+                            <td>5</td>
+                            <td>S / Down Arrow - opponent</td>
+                            <td>Cyan</td>
+                        </tr>
+                        <tr>
+                            <td>Up</td>
+                            <td>6</td>
+                            <td>W / Up Arrow - opponent</td>
+                            <td>Green</td>
+                        </tr>
+                        <tr>
+                            <td>Right</td>
+                            <td>7</td>
+                            <td>D / Right Arrow - opponent</td>
+                            <td>Red</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h2 id="advanced">Advanced Charting Techniques</h2>
+                
+                <p>Once you've mastered the basics, you can explore more advanced V-Slice charting techniques to create unique gameplay experiences.</p>
+                
+                <h3>Custom Note Types</h3>
+                
+                <p>V-Slice supports various custom note types for different gameplay mechanics:</p>
+                
+                <blockquote>
+                    <p>"The flexibility of V-Slice note types allows charters to create unique gameplay experiences that weren't possible in legacy formats." - KadeDev</p>
+                </blockquote>
+                
+                <h4>Available Note Types</h4>
+                
+                <pre><code>// Mine note (damages player when hit)
+{
+  "t": 1000,
+  "d": 1,
+  "p": "mine"
+}
+
+// Warning note (must NOT be hit)
+{
+  "t": 2000,
+  "d": 2,
+  "p": "warning"
+}
+
+// Hold note (sustain)
+{
+  "t": 3000,
+  "d": 3,
+  "l": 500,  // 500ms hold length
+  "p": "normal"
+}</code></pre>
+                
+                <div class="info-box">
+                    <strong>Tip:</strong> Use warning notes sparingly to create tension in your charts. Too many can overwhelm players and make patterns feel unfair.
+                </div>
+                
+                <h3>Camera Events and Stage Triggers</h3>
+                
+                <p>V-Slice includes a robust event system for controlling camera movement and stage effects:</p>
+                
+                <pre><code>// Camera focus event
+{
+  "t": 4000,
+  "e": "focusCamera",
+  "v": {
+    "char": 1,  // 0=Player, 1=Opponent, 2=Girlfriend
+    "ease": "linear",
+    "duration": 0.5
+  }
+}
+
+// Stage light event
+{
+  "t": 4500,
+  "e": "setStageLight",
+  "v": {
+    "color": "#FF0000",
+    "intensity": 1.5
+  }
+}</code></pre>
+                
+                <h5>Event Timing Best Practices</h5>
+                
+                <p>When implementing events in your charts, keep these guidelines in mind:</p>
+                
+                <ul>
+                    <li>Sync camera movements to the beat or significant musical moments</li>
+                    <li>Avoid rapid camera switches that can cause motion sickness</li>
+                    <li>Test your events on different screen sizes
+                        <ul>
+                            <li>16:9 aspect ratio (most common)</li>
+                            <li>4:3 aspect ratio (older monitors)</li>
+                            <li>21:9 ultrawide displays</li>
+                        </ul>
+                    </li>
+                    <li>Document complex event sequences for future reference</li>
+                </ul>
+                
+                <hr>
+                
+                <h2 id="reference">Note Type Reference</h2>
+                
+                <p>Below is a comprehensive reference of all available note types in V-Slice format:</p>
+                
+                <h3>Standard Note Types</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Note Kind</th>
+                            <th>Code Value</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>normal</code></td>
+                            <td>"normal"</td>
+                            <td>Standard note that must be hit</td>
+                        </tr>
+                        <tr>
+                            <td><code>mine</code></td>
+                            <td>"mine"</td>
+                            <td>Damages player when hit, should be avoided</td>
+                        </tr>
+                        <tr>
+                            <td><code>warning</code></td>
+                            <td>"warning"</td>
+                            <td>Must NOT be hit (damages if pressed)</td>
+                        </tr>
+                        <tr>
+                            <td><code>alt</code></td>
+                            <td>"alt"</td>
+                            <td>Triggers alternate character animation</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h6>Additional Resources</h6>
+                
+                <p>For more information, check out these resources:</p>
+                
+                <ul>
+                    <li><a href="#">FNF Polymod Documentation</a></li>
+                    <li><a href="#">V-Slice Format Specification</a></li>
+                    <li><a href="#">Chart Editor Video Tutorials</a></li>
+                    <li><a href="#">Community Discord Server</a></li>
+                </ul>
+                
+                <hr>
+                
+                <p><small>Last updated: February 2, 2026 | Contributors: 15 | <a href="#">Edit this page</a></small></p>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <a href="forums.html">forums</a>
+        <a href="help.html">help & bug reports</a>
+        <a href="scripts.html">scripts</a>
+        <a href="contributing.html">contributing</a>
+        <a>version: 0.1</a>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  let isSquished = false;
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'm') {
+      isSquished = !isSquished;
+      
+      if (isSquished) {
+        document.body.style.width = '25.93vw';
+        document.body.style.minWidth = '354px';
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.width = '100vw';
+        document.body.style.minWidth = 'auto';
+        document.body.style.overflow = 'auto';
+      }
+    }
+  });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const logoFnf = document.querySelector('.logo-fnf');
+  let isPlaying = false;
+  let bumpTimeout = null;
+  let audio = null;
+  
+  // Editable durations (in milliseconds)
+  const DURATION_BIG = 150;    // How long to stay at scale(1.1)
+  const DURATION_NORMAL = 500; // How long to stay at scale(1.0)
+  
+  function bump() {
+    if (!isPlaying) return;
+    
+    // Scale to 1.1
+    logoFnf.style.transform = 'scale(1.1)';
+    
+    bumpTimeout = setTimeout(() => {
+      if (!isPlaying) return;
+      
+      // Scale to 1.0
+      logoFnf.style.transform = 'scale(1.0)';
+      
+      bumpTimeout = setTimeout(() => {
+        bump(); // Repeat
+      }, DURATION_NORMAL);
+    }, DURATION_BIG);
+  }
+  
+  logoFnf.addEventListener('click', () => {
+    if (!isPlaying) {
+      // Start playing
+      isPlaying = true;
+      
+      // Create and play audio
+      audio = new Audio('funkay.ogg');
+      audio.loop = true;
+      audio.play();
+      
+      // Start bumping animation
+      bump();
+      
+    } else {
+      // Stop playing
+      isPlaying = false;
+      
+      // Stop and remove audio
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+        audio = null;
+      }
+      
+      // Stop bumping
+      if (bumpTimeout) {
+        clearTimeout(bumpTimeout);
+        bumpTimeout = null;
+      }
+      
+      // Reset scale
+      logoFnf.style.transform = 'scale(1.0)';
+    }
+  });
+});
+</script>
+</body>
+</html>

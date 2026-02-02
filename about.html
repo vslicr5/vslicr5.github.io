@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About V-Slicr5</title>
+    <link rel="shortcut icon" type="image/png" href="wiki.png">
+    <style>
+/* ===== ROOT VARIABLES ===== */
+:root {
+    --gradient-bg: linear-gradient(to bottom, #EDEBD7, #e4edd7);
+    --gradient-header: linear-gradient(to bottom, #9C7A97, #888DA7);
+    --text-primary: #2c3e50;
+    --text-secondary: #555;
+    --text-light: #ffffff;
+    --link-color: #5a4d7a;
+    --link-hover: #7a6d9a;
+    --border-color: #d0d0d0;
+    --code-bg: #f4f4f4;
+    --blockquote-border: #9C7A97;
+    --table-border: #ccc;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* ===== RESET & BASE STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    overflow-x: hidden;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ===== LAYOUT ===== */
+.v1 {
+    background-image: var(--gradient-bg);
+    flex: 1;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+header, footer {
+    background-image: var(--gradient-header);
+    width: 100%;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px var(--shadow);
+    flex-wrap: wrap;
+    min-height: 45px;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* ===== NAVIGATION ===== */
+header a, footer a {
+    text-decoration: none;
+    color: var(--text-light);
+    margin: 8px 15px;
+    font-family: monospace;
+    font-weight: 550;
+    font-size: 14px;
+    transform: scale(1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+header a:hover, footer a:hover {
+    transform: scale(1.1);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+footer a:last-child {
+    cursor: default;
+    opacity: 0.7;
+}
+
+footer a:last-child:hover {
+    transform: scale(1);
+    text-shadow: none;
+}
+
+/* ===== LOGO & HOME PAGE ===== */
+.logo-center {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.logo-center img {
+    width: 100%;
+    height: auto;
+    max-width: 480px;
+}
+
+/* ===== WIKI CONTENT CONTAINER ===== */
+.wiki-container {
+    max-width: 900px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px 50px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px var(--shadow);
+    margin: 0 auto;
+}
+
+/* ===== TYPOGRAPHY ===== */
+.wiki-container h1 {
+    font-size: 2.5em;
+    margin-bottom: 0.5em;
+    color: var(--text-primary);
+    border-bottom: 3px solid var(--blockquote-border);
+    padding-bottom: 10px;
+    font-weight: 700;
+}
+
+.wiki-container h2 {
+    font-size: 2em;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 8px;
+    font-weight: 600;
+}
+
+.wiki-container h3 {
+    font-size: 1.5em;
+    margin-top: 1.3em;
+    margin-bottom: 0.5em;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.wiki-container h4 {
+    font-size: 1.25em;
+    margin-top: 1.2em;
+    margin-bottom: 0.5em;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.wiki-container h5 {
+    font-size: 1.1em;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.wiki-container h6 {
+    font-size: 1em;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-style: italic;
+}
+
+/* ===== PARAGRAPHS & TEXT ===== */
+.wiki-container p {
+    margin-bottom: 1em;
+    line-height: 1.7;
+    color: var(--text-primary);
+    text-align: justify;
+}
+
+.wiki-container p:last-child {
+    margin-bottom: 0;
+}
+
+.wiki-container strong, .wiki-container b {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.wiki-container em, .wiki-container i {
+    font-style: italic;
+}
+
+.wiki-container mark {
+    background-color: #fff3cd;
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+.wiki-container small {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+}
+
+/* ===== LINKS ===== */
+.wiki-container a {
+    color: var(--link-color);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.wiki-container a:hover {
+    color: var(--link-hover);
+    border-bottom-color: var(--link-hover);
+}
+
+/* ===== LISTS ===== */
+.wiki-container ul, .wiki-container ol {
+    margin: 1em 0;
+    padding-left: 2em;
+}
+
+.wiki-container ul li, .wiki-container ol li {
+    margin-bottom: 0.5em;
+    line-height: 1.6;
+}
+
+.wiki-container ul ul, .wiki-container ol ol,
+.wiki-container ul ol, .wiki-container ol ul {
+    margin: 0.5em 0;
+}
+
+/* ===== CODE & PREFORMATTED TEXT ===== */
+.wiki-container code {
+    background-color: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+    color: #c7254e;
+}
+
+.wiki-container pre {
+    background-color: var(--code-bg);
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    margin: 1em 0;
+    border-left: 4px solid var(--blockquote-border);
+}
+
+.wiki-container pre code {
+    background: none;
+    padding: 0;
+    color: var(--text-primary);
+}
+
+/* ===== BLOCKQUOTES ===== */
+.wiki-container blockquote {
+    margin: 1.5em 0;
+    padding: 15px 20px;
+    border-left: 5px solid var(--blockquote-border);
+    background-color: rgba(156, 122, 151, 0.05);
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+.wiki-container blockquote p {
+    margin-bottom: 0.5em;
+}
+
+.wiki-container blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* ===== TABLES ===== */
+.wiki-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    background-color: white;
+}
+
+.wiki-container table th,
+.wiki-container table td {
+    border: 1px solid var(--table-border);
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.wiki-container table th {
+    background-color: var(--code-bg);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.wiki-container table tr:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.wiki-container table tr:hover {
+    background-color: rgba(156, 122, 151, 0.08);
+}
+
+/* ===== HORIZONTAL RULE ===== */
+.wiki-container hr {
+    border: none;
+    border-top: 2px solid var(--border-color);
+    margin: 2em 0;
+}
+
+/* ===== IMAGES ===== */
+.wiki-container img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5em auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+/* ===== INFO BOXES ===== */
+.info-box, .warning-box, .note-box {
+    padding: 15px 20px;
+    margin: 1.5em 0;
+    border-radius: 5px;
+    border-left: 5px solid;
+}
+
+.info-box {
+    background-color: #d1ecf1;
+    border-left-color: #0c5460;
+    color: #0c5460;
+}
+
+.warning-box {
+    background-color: #fff3cd;
+    border-left-color: #856404;
+    color: #856404;
+}
+
+.note-box {
+    background-color: #e7e7ff;
+    border-left-color: #5a4d7a;
+    color: #5a4d7a;
+}
+
+/* ===== TABLE OF CONTENTS ===== */
+.toc {
+    background-color: var(--code-bg);
+    padding: 20px 25px;
+    margin: 1.5em 0;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+}
+
+.toc h3 {
+    margin-top: 0;
+    margin-bottom: 0.8em;
+    font-size: 1.2em;
+}
+
+.toc ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.toc ul li {
+    margin-bottom: 0.4em;
+}
+
+.toc ul ul {
+    padding-left: 1.5em;
+    margin-top: 0.4em;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .wiki-container {
+        padding: 30px 25px;
+    }
+    
+    .wiki-container h1 {
+        font-size: 2em;
+    }
+    
+    .wiki-container h2 {
+        font-size: 1.6em;
+    }
+    
+    header a, footer a {
+        margin: 5px 10px;
+        font-size: 12px;
+    }
+    
+    .logo-center {
+        max-width: 320px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wiki-container {
+        padding: 20px 15px;
+    }
+    
+    header, footer {
+        padding: 0 10px;
+    }
+    
+    header a, footer a {
+        margin: 5px 8px;
+        font-size: 11px;
+    }
+}
+.v1 {
+  background-image: url('bg.png');
+}
+/* ===== V1 CONTAINER ===== */
+.v1 {
+    background-image: url('bg.png');
+    flex: 1;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* ===== FNF LOGO ===== */
+.logo-fnf {
+    transition: transform 0.1s ease-in-out;
+    width: auto;
+    max-width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 25px auto; /* Centered with space below */
+    will-change: transform; 
+    transform: scale(1); /* */
+}
+.logo-fnf:hover {
+    transform: scale(1.1); /* */
+}
+
+.logo-fnf img {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .logo-fnf {
+        max-width: 300px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-fnf {
+        max-width: 200px;
+        margin-bottom: 10px;
+    }
+}
+    #quoteWrapper {
+      position: relative;
+      width: 100vw;
+      height: 30px;
+      top:-40px;
+      overflow: hidden;
+      background: #222;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    #quoteBox {
+      position: absolute;
+      white-space: nowrap;
+      font-weight: bold;
+      background: #222;
+      color: white;
+      transform: translateX(100%);
+      user-select: none;
+      cursor: default;
+      font-size: 1.0em;
+      font-family: monospace;
+    }
+#quoteBox {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.quote-sticker {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  vertical-align: middle;
+  pointer-events: none;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html">V-Slicing</a>
+        <a href="charting.html">charting</a>
+        <a href="templates.html">templates</a>
+        <a href="about.html">about vslicr5</a>
+        <a href="tutorials.html">tutorials</a>
+        <a href="profile.html">profile</a>
+    </header>
+    
+    <main>
+        <div class="v1">
+<!-- MARQUEE HEADING SHII -->
+  <div id="quoteWrapper">
+    <p id="quoteBox">Loading...</p>
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const wrapper = document.getElementById("quoteWrapper");
+  const box = document.getElementById("quoteBox");
+
+  let quotes = [
+    "Yeezy Night Funkin' Now Avaliable on Gamebanana! https://gamebanana.com/mods/636667"
+  ];
+
+  let pos = 0;
+  let lastTime = null;
+
+  const baseSpeed = 120;
+  const slowSpeed = 70;
+  const slowerSpeed = 30;
+
+  let currentSpeed = baseSpeed;
+  let isHoveringBox = false;
+  let isHoveringText = false;
+  let isMouseDown = false;
+
+  /* ==========================================
+     Quote Image Parser
+     Supports:
+     :name:
+     :folder/name:
+     :folder/name.gif:
+     ========================================== */
+  function parseQuoteWithImages(text) {
+    return text.replace(
+      /:([a-zA-Z0-9_\-\/]+(?:\.(png|gif|webp|jpg|jpeg))?):/gi,
+      (match, path, ext) => {
+        // Prevent path traversal
+        if (path.includes("..")) return match;
+
+        // Explicit extension → use as-is
+        if (ext) {
+          return `
+            <img
+              src="https://raw.githubusercontent.com/01110010-00110101/01110010-00110101.github.io/main/system/images/stickers/${path}"
+              class="quote-sticker"
+              alt="${path}"
+              loading="lazy"
+            >
+          `;
+        }
+
+        // No extension → png fallback to gif
+        return `
+          <img
+            src="https://raw.githubusercontent.com/01110010-00110101/01110010-00110101.github.io/main/system/images/stickers/${path}.png"
+            class="quote-sticker"
+            alt="${path}"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/01110010-00110101/01110010-00110101.github.io/main/system/images/stickers/${path}.gif';"
+          >
+        `;
+      }
+    );
+  }
+
+  function setQuote() {
+    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+
+    box.innerHTML = parseQuoteWithImages(quote);
+
+    pos = wrapper.offsetWidth;
+    box.style.transform = `translateX(${pos}px)`;
+  }
+
+  function updateSpeed() {
+    if (isMouseDown) currentSpeed = 0;
+    else if (isHoveringText) currentSpeed = slowerSpeed;
+    else if (isHoveringBox) currentSpeed = slowSpeed;
+    else currentSpeed = baseSpeed;
+  }
+
+  function animate(time) {
+    if (lastTime !== null) {
+      const dt = (time - lastTime) / 1000;
+      pos -= currentSpeed * dt;
+      box.style.transform = `translateX(${pos}px)`;
+
+      if (pos + box.offsetWidth < 0) {
+        setQuote();
+      }
+    }
+    lastTime = time;
+    requestAnimationFrame(animate);
+  }
+
+  function start() {
+    setQuote();
+    requestAnimationFrame(animate);
+  }
+
+  wrapper.addEventListener("mouseenter", () => {
+    isHoveringBox = true;
+    updateSpeed();
+  });
+
+  wrapper.addEventListener("mouseleave", () => {
+    isHoveringBox = false;
+    isHoveringText = false;
+    updateSpeed();
+  });
+
+  box.addEventListener("mouseenter", () => {
+    isHoveringText = true;
+    updateSpeed();
+  });
+
+  box.addEventListener("mouseleave", () => {
+    isHoveringText = false;
+    updateSpeed();
+  });
+
+  wrapper.addEventListener("mousedown", () => {
+    isMouseDown = true;
+    updateSpeed();
+  });
+
+  wrapper.addEventListener("mouseup", () => {
+    isMouseDown = false;
+    updateSpeed();
+  });
+
+  start();
+});
+</script>
+                 <div class="logo-fnf" title="click me to play music!">
+                  <img src="fnf.png"/>
+                 </div>
+            <div class="wiki-container">
+<h1>VslicR5 - FNF Chart Editor</h1>
+
+<p>VslicR5 is a web-based chart editor for Friday Night Funkin' V-Slice/Polymod format. Created by YZY MOB, this tool allows you to create, edit, and export custom charts directly in your browser with real-time audio visualization and an intuitive interface.</p>
+
+<div class="note-box">
+    <strong>Current Version:</strong> v0.1 - Active development with v1.1 coming soon!
+</div>
+
+<div class="toc">
+    <h3>Table of Contents</h3>
+    <ul>
+        <li><a href="#overview">1. Overview</a></li>
+        <li><a href="#features">2. Features</a></li>
+        <li><a href="#interface">3. Interface Guide</a>
+            <ul>
+                <li><a href="#canvas">3.1 Canvas Controls</a></li>
+                <li><a href="#note-placement">3.2 Note Placement</a></li>
+                <li><a href="#audio">3.3 Audio Controls</a></li>
+            </ul>
+        </li>
+        <li><a href="#controls">4. Keyboard Controls</a></li>
+        <li><a href="#workflow">5. Workflow Guide</a></li>
+    </ul>
+</div>
+
+<h2 id="overview">Overview</h2>
+
+<p>VslicR5 is designed specifically for charting Friday Night Funkin' songs in the V-Slice/Polymod format. Whether you're creating charts for custom mods or official content, VslicR5 provides all the tools you need in a single, accessible web application.</p>
+
+<h3>Why VslicR5?</h3>
+
+<ul>
+    <li><strong>No Installation Required:</strong> Run entirely in your browser</li>
+    <li><strong>Real-time Preview:</strong> See and hear your chart as you create it</li>
+    <li><strong>Multi-Difficulty Support:</strong> Chart Easy, Normal, and Hard simultaneously</li>
+    <li><strong>Auto-Save:</strong> Your work is saved automatically with IndexedDB</li>
+</ul>
+
+<h2 id="features">Features</h2>
+
+<h3>Core Charting Features</h3>
+
+<h4>Visual Chart Editor</h4>
+<p>The main canvas displays your chart with 8 lanes (4 for player, 4 for opponent) with color-coded arrows:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Lane</th>
+            <th>Side</th>
+            <th>Direction</th>
+            <th>Color</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>0-3</td>
+            <td>Player</td>
+            <td>Left, Down, Up, Right</td>
+            <td>Purple, Cyan, Green, Red</td>
+        </tr>
+        <tr>
+            <td>4-7</td>
+            <td>Opponent</td>
+            <td>Left, Down, Up, Right</td>
+            <td>Purple, Cyan, Green, Red (Darker)</td>
+        </tr>
+    </tbody>
+</table>
+
+<h4>Note Types</h4>
+
+<ul>
+    <li><strong>Standard Notes:</strong> Basic hit notes placed at specific timestamps</li>
+    <li><strong>Hold Notes:</strong> Sustained notes with adjustable length</li>
+    <li><strong>Smart Snapping:</strong> Notes automatically snap to the nearest lane for precise placement</li>
+</ul>
+
+<h4>Multi-Difficulty Charting</h4>
+
+<p>VslicR5 includes a unique difficulty system that allows you to chart multiple difficulties at once:</p>
+
+<ul>
+    <li>Toggle Easy, Normal, and Hard difficulties independently</li>
+    <li>Add notes to selected difficulties simultaneously</li>
+    <li>Filter JSON output by active difficulties</li>
+    <li>Visual indicators show which difficulties are active</li>
+</ul>
+
+<div class="info-box">
+    <strong>Tip:</strong> Use the checkbox buttons to toggle difficulties on/off. Only notes for active difficulties will be added when you place notes.
+</div>
+
+<h3>Audio Integration</h3>
+
+<h4>Audio Playback</h4>
+
+<p>Import and play audio files in multiple formats:</p>
+
+<ul>
+    <li>OGG (recommended for FNF)</li>
+    <li>WAV</li>
+    <li>MP3</li>
+    <li>Most common audio formats</li>
+</ul>
+
+<h4>Real-time Audio Visualizer</h4>
+
+<p>The built-in frequency visualizer displays your audio in real-time with 64 color-coded blocks:</p>
+
+<blockquote>
+    <p>"The visualizer helps you identify beat patterns and musical sections, making it easier to place notes accurately." - VslicR5 Documentation</p>
+</blockquote>
+
+<h3>Editing Tools</h3>
+
+<h4>Note Manipulation</h4>
+
+<pre><code>// Click a note to select it
+// Drag to move in time and change lanes
+// Double-click to delete
+// Edit hold length in real-time</code></pre>
+
+<h5>Interactive Note Editing</h5>
+
+<ul>
+    <li><strong>Click:</strong> Select a note to view its properties</li>
+    <li><strong>Drag:</strong> Move notes vertically (time) and horizontally (lane)</li>
+    <li><strong>Double-click:</strong> Delete a note instantly</li>
+    <li><strong>Length Editor:</strong> Adjust hold note duration with numeric input</li>
+</ul>
+
+<h4>Timeline Navigation</h4>
+
+<ul>
+    <li>Vertical scrollbar for precise time control</li>
+    <li>+100ms / -100ms quick seek buttons</li>
+    <li>Real-time timestamp display</li>
+    <li>Visual playhead indicator</li>
+</ul>
+
+<h3>Data Management</h3>
+
+<h4>Save & Load System</h4>
+
+<p>VslicR5 uses IndexedDB for persistent local storage:</p>
+
+<pre><code>{
+  "version": "2.0.0",
+  "scrollSpeed": {
+    "easy": 1.8,
+    "normal": 2.0,
+    "hard": 2.2
+  },
+  "events": [],
+  "notes": {
+    "easy": [{"t": 1000, "d": 0, "l": 0, "p": []}],
+    "normal": [{"t": 1000, "d": 0, "l": 0, "p": []}],
+    "hard": [{"t": 1000, "d": 0, "l": 0, "p": []}]
+  },
+  "generatedBy": "VslicR5 - FNF v0.8.0"
+}</code></pre>
+
+<h4>Import/Export</h4>
+
+<ul>
+    <li><strong>Import JSON:</strong> Load existing V-Slice format charts</li>
+    <li><strong>Export JSON:</strong> Save your chart in V-Slice format</li>
+    <li><strong>Auto-formatting:</strong> Exported JSON is properly formatted and readable</li>
+    <li><strong>Format Conversion:</strong> Automatically handles both array and object note formats</li>
+</ul>
+
+<h2 id="interface">Interface Guide</h2>
+
+<h3 id="canvas">Canvas Controls</h3>
+
+<p>The main canvas shows your chart with several visual elements:</p>
+
+<ul>
+    <li><strong>Lane Dividers:</strong> Gray vertical lines separating the 8 lanes</li>
+    <li><strong>Hit Line:</strong> Red horizontal line in the center (current playback position)</li>
+    <li><strong>Notes:</strong> Colored arrows positioned based on time and lane</li>
+    <li><strong>Hold Trails:</strong> Semi-transparent bars showing hold note duration</li>
+    <li><strong>Selection Highlight:</strong> Yellow outline around selected notes</li>
+</ul>
+
+<h3 id="note-placement">Note Placement</h3>
+
+<h4>Using the Note Pads</h4>
+
+<p>Two button grids allow you to place notes:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Pad</th>
+            <th>Keys</th>
+            <th>Lanes</th>
+            <th>Color Theme</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Opponent</td>
+            <td>W, A, S, D</td>
+            <td>4-7</td>
+            <td>Red background</td>
+        </tr>
+        <tr>
+            <td>Player</td>
+            <td>Arrow Keys</td>
+            <td>0-3</td>
+            <td>Blue background</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3 id="audio">Audio Controls</h3>
+
+<div class="row">
+    <button>Play</button> - Start audio playback and chart animation
+</div>
+<div class="row">
+    <button>Pause</button> - Pause at current position
+</div>
+<div class="row">
+    <button>Stop</button> - Return to beginning (0ms)
+</div>
+
+<h4>Time Adjustment</h4>
+
+<ul>
+    <li><strong>-100ms Button:</strong> Jump backward 100 milliseconds</li>
+    <li><strong>+100ms Button:</strong> Jump forward 100 milliseconds</li>
+    <li><strong>Time Scrollbar:</strong> Drag to any point in the song</li>
+</ul>
+
+<h2 id="controls">Keyboard Controls</h2>
+
+<p>VslicR5 supports comprehensive keyboard shortcuts:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>Arrow Left</code></td>
+            <td>Place player left note</td>
+        </tr>
+        <tr>
+            <td><code>Arrow Down</code></td>
+            <td>Place player down note</td>
+        </tr>
+        <tr>
+            <td><code>Arrow Up</code></td>
+            <td>Place player up note</td>
+        </tr>
+        <tr>
+            <td><code>Arrow Right</code></td>
+            <td>Place player right note</td>
+        </tr>
+        <tr>
+            <td><code>A</code></td>
+            <td>Place opponent left note</td>
+        </tr>
+        <tr>
+            <td><code>S</code></td>
+            <td>Place opponent down note</td>
+        </tr>
+        <tr>
+            <td><code>W</code></td>
+            <td>Place opponent up note</td>
+        </tr>
+        <tr>
+            <td><code>D</code></td>
+            <td>Place opponent right note</td>
+        </tr>
+        <tr>
+            <td><code>Space</code></td>
+            <td>Toggle play/pause</td>
+        </tr>
+        <tr>
+            <td><code>M</code></td>
+            <td>Toggle mobile view (experimental)</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="warning-box">
+    <strong>Note:</strong> Keyboard shortcuts are disabled when the JSON textarea is focused.
+</div>
+
+<h2 id="workflow">Workflow Guide</h2>
+
+<h3>Creating Your First Chart</h3>
+
+<ol>
+    <li><strong>Import Audio:</strong> Click the music icon and select your song file (OGG recommended)</li>
+    <li><strong>Select Difficulties:</strong> Toggle which difficulties you want to chart (Easy/Normal/Hard)</li>
+    <li><strong>Place Notes:</strong> Use keyboard shortcuts or button pads to add notes at the current time</li>
+    <li><strong>Adjust Timing:</strong> Drag notes vertically to fine-tune their timing</li>
+    <li><strong>Add Holds:</strong> Click a note and edit its length value</li>
+    <li><strong>Preview:</strong> Press Space or click Play to test your chart</li>
+    <li><strong>Save:</strong> Click the save icon to store your chart locally</li>
+    <li><strong>Export:</strong> Click the export icon to download your chart as JSON</li>
+</ol>
+
+<h3>Advanced Techniques</h3>
+
+<h4>Lane Switching</h4>
+
+<p>Drag notes horizontally to switch lanes. The note will snap to the nearest lane within 35 pixels:</p>
+
+<pre><code>// Lane snap threshold
+const LANE_SNAP_THRESHOLD = 35;
+
+// Drag smoothly between lanes
+// Note automatically snaps to valid positions</code></pre>
+
+<h4>JSON Live Editing</h4>
+
+<p>The JSON textarea updates in real-time and accepts manual edits:</p>
+
+<ul>
+    <li>Edit note properties directly in JSON</li>
+    <li>Changes apply immediately to the canvas</li>
+    <li>Supports both object and array note formats</li>
+    <li>Auto-converts between formats as needed</li>
+</ul>
+
+<h4>Difficulty Filtering</h4>
+
+<p>The JSON output automatically filters based on active difficulties:</p>
+
+<ul>
+    <li>Unchecked difficulties show empty arrays <code>[]</code></li>
+    <li>Only active difficulties receive new notes</li>
+    <li>Switch difficulties mid-chart for varied complexity</li>
+</ul>
+
+<hr>
+
+<h3>Additional Tools</h3>
+
+<h4>Dashboard Menu</h4>
+
+<p>Access additional utilities from the dashboard icon (top-right):</p>
+
+<ul>
+    <li><strong>OGG Converter:</strong> Convert audio files to OGG format for FNF compatibility</li>
+    <li>More tools coming in v1.1!</li>
+</ul>
+
+<h4>Library System</h4>
+
+<p>Browse and preview assets (coming soon in v1.1):</p>
+
+<ul>
+    <li>Chart templates</li>
+    <li>Character sprites</li>
+    <li>Example charts</li>
+</ul>
+
+<h6>Useful Links</h6>
+
+<ul>
+    <li><a href="https://padlet.com/rhap5ody/devlog-u2ep63atfnqk705n">Development Blog</a></li>
+    <li><a href="../system/download/index.html">Download Versions</a></li>
+    <li><a href="../system/info/index.html">More Info</a></li>
+    <li><a href="../system/socials/index.html">Social Links</a></li>
+</ul>
+
+<hr>
+
+<p><small>VslicR5 v0.1 | Created by YZY MOB | Used in TCD Demo (V-Slice) | <a href="#">Report Issues</a></small></p>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <a href="forums.html">forums</a>
+        <a href="help.html">help & bug reports</a>
+        <a href="scripts.html">scripts</a>
+        <a href="contributing.html">contributing</a>
+        <a>version: 0.1</a>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  let isSquished = false;
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'm') {
+      isSquished = !isSquished;
+      
+      if (isSquished) {
+        document.body.style.width = '25.93vw';
+        document.body.style.minWidth = '354px';
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.width = '100vw';
+        document.body.style.minWidth = 'auto';
+        document.body.style.overflow = 'auto';
+      }
+    }
+  });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const logoFnf = document.querySelector('.logo-fnf');
+  let isPlaying = false;
+  let bumpTimeout = null;
+  let audio = null;
+  
+  // Editable durations (in milliseconds)
+  const DURATION_BIG = 150;    // How long to stay at scale(1.1)
+  const DURATION_NORMAL = 500; // How long to stay at scale(1.0)
+  
+  function bump() {
+    if (!isPlaying) return;
+    
+    // Scale to 1.1
+    logoFnf.style.transform = 'scale(1.1)';
+    
+    bumpTimeout = setTimeout(() => {
+      if (!isPlaying) return;
+      
+      // Scale to 1.0
+      logoFnf.style.transform = 'scale(1.0)';
+      
+      bumpTimeout = setTimeout(() => {
+        bump(); // Repeat
+      }, DURATION_NORMAL);
+    }, DURATION_BIG);
+  }
+  
+  logoFnf.addEventListener('click', () => {
+    if (!isPlaying) {
+      // Start playing
+      isPlaying = true;
+      
+      // Create and play audio
+      audio = new Audio('funkay.ogg');
+      audio.loop = true;
+      audio.play();
+      
+      // Start bumping animation
+      bump();
+      
+    } else {
+      // Stop playing
+      isPlaying = false;
+      
+      // Stop and remove audio
+      if (audio) {
+        audio.pause();
+        audio.currentTime = 0;
+        audio = null;
+      }
+      
+      // Stop bumping
+      if (bumpTimeout) {
+        clearTimeout(bumpTimeout);
+        bumpTimeout = null;
+      }
+      
+      // Reset scale
+      logoFnf.style.transform = 'scale(1.0)';
+    }
+  });
+});
+</script>
+</body>
+</html>
