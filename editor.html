@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VslicR5 | Friday Night Funkin' Modding tools</title>
+<title>VslicR5 - Friday Night Funkin' Modding tools</title>
 <link rel="shortcut icon" type="image/png" href="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/Untitled93_20260128131220.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -97,7 +97,7 @@ body {
 }
 
 /* MAIN LAYOUT */
-.main-content { display: flex; width: 100%; gap: 12px; }
+.main-content { margin-top:18px; display: flex; width: 100%; gap: 12px; }
 textarea {
   width: 320px;
   height: 900px;
@@ -321,8 +321,8 @@ height:32px;
 }
 
 .diff-btns {
-  padding-left: 200px;
-  margin-left: 200px;
+  padding-left: 150px;
+  margin-left: 150px;
 }
 .control-buttons-container {
     background: #222;
@@ -336,8 +336,9 @@ height:32px;
     align-items: center; /* also centers vertically */
 }
 .v1 {
+margin-top:-12px;
 width: 100vw;
-height: 935px;
+height: 968px;
 background: #080708;
 }
     #quoteWrapper {
@@ -611,24 +612,27 @@ img[src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/im
 </head>
 
 <body>
-<div class="logo-container" id="logoWrapper">
 
-<!-- DASHBOARD -->
-<div id="dashboard-container">
-  <img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/icons/dashboard.png" id="dashboard-icon" alt="Dashboard" onclick="toggleDashboard()">
-  <div id="dashboard-menu">
-    <a href="https://mcmattyobriore.github.io./vslicr5/system/pages/ogg/index.html">OGG Converter</a>
+<!-- Wrapper that contains everything that should disappear together -->
+<div class="logo-wrapper" id="logoWrapper">
+  <!-- DASHBOARD -->
+  <div id="dashboard-container">
+    <img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/icons/dashboard.png" id="dashboard-icon" alt="Dashboard" onclick="toggleDashboard()">
+    <div id="dashboard-menu">
+      <a href="https://mcmattyobriore.github.io./vslicr5/system/pages/ogg/index.html">OGG Converter</a>
+    </div>
   </div>
-</div>
 
-<!-- LOGO -->
-  <img title="click me to hide :)" src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/Untitled93_20260128131220.png" alt="VslicR5 Logo" onclick="this.parentElement.style.display='none'">
-</div>
+  <!-- LOGO (centered) -->
+  <div class="logo-container">
+    <img title="click me to hide :)" src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/Untitled93_20260128131220.png" alt="VslicR5 Logo" onclick="document.getElementById('logoWrapper').style.display='none'">
+  </div>
 
-<!-- MARQUEE HEADING SHII -->
+  <!-- MARQUEE (beneath logo) -->
   <div id="quoteWrapper">
     <p id="quoteBox">Loading...</p>
   </div>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -640,7 +644,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Use the wiki to learn more about vslicr5 & polymod v-slice modding for Friday Night Funkin'",
     "need help? click '?' to find shortcuts and to learn proper formating!",
     "use the library to import existing songs and to update charts & metadata",
-    "meta data and charts should be placed in 'mods/(mod-title)/data/songs'",
+    "metadata and charts should be placed in 'mods/(mod-title)/data/songs'",
     "n & m short cuts are to manually scroll across the chart, not to edit the notes positions, click on a note and drag them to the desired location",
     "control + z to undo & control + x to redo!",
     "length controls how long a note is held while property is used for note types",
@@ -849,6 +853,8 @@ document.addEventListener("DOMContentLoaded", () => {
       <button title="explore library?" onclick="openLibrary()"><img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/images/library.png"/></button>
       <button id="expNColTxtarea" title="click here to expand or close the textarea" onclick="expandNCollapseTextarea()"><img src="collapse.png"/></button>
       <button title="settings" onclick="openSettings()"><img src="settings.png"/></button>
+      <button title="click for information" onclick="openQuestions()"><img src="questions.png"/></button>
+      <button title="open wiki! in a new tab ofc :v" onclick="window.open('https://vslicr5.github.io./index.html', '_blank');"><img src="wiki.png"/></button>
       </div>
 </div>
 <div class="diff-btns">
@@ -944,7 +950,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <a href="../system/download/index.html">download versions</a>
 <a href="../system/info/index.html">info</a>
 <a href="../system/socials/index.html">socials</a>
-<a>version: v0.2</a>
+<a>version: v0.2.1</a>
 
 </footer>
 <!-- library -->
@@ -1349,6 +1355,14 @@ function openSettings() {
 
 function closeSettings() {
   document.getElementById('settings-modal').style.display = 'none';
+}
+
+function openQuestions() {
+
+}
+
+function closeQuestions() {
+
 }
 
 function saveSettings() {
