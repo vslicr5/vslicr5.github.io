@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini HTML App Builder</title>
+
+<style>
+body {
+  margin: 0;
+  background: #111;
+  color: #eee;
+  font-family: monospace;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+header {
+  background: #1a1a1a;
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #333;
+}
+
+button, label {
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+button:active { background: #444; }
+
+#editor-wrapper {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+#lineNumbers {
+  background: #0b0b0b;
+  color: #555;
+  padding: 10px 6px;
+  text-align: right;
+  user-select: none;
+  overflow: hidden;
+}
+
+textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  resize: none;
+  background: #000;
+  color: #0f0;
+  padding: 10px;
+  font-size: 12px;
+  font-family: monospace;
+  line-height: 1.4em;
+  overflow: auto;
+}
+
+#terminal {
+  height: 140px;
+  background: #000;
+  color: #f55;
+  border-top: 1px solid #333;
+  padding: 8px;
+  font-size: 12px;
+  display: none;
+  overflow-y: auto;
+}
+
+#terminal.ok { color: #0f0; }
+
+#notes-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 350px;
+  height: 100vh;
+  background: #1a1a1a;
+  border-left: 1px solid #333;
+  display: none;
+  flex-direction: column;
+  z-index: 1000;
+}
+
+#notes-panel.active {
+  display: flex;
+}
+
+#notes-header {
+  background: #222;
+  padding: 10px;
+  border-bottom: 1px solid #333;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#notes-editor {
+  flex: 1;
+  background: #0d0d0d;
+  color: #fff;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 10px;
+  font-size: 13px;
+  font-family: monospace;
+  line-height: 1.5em;
+}
+
+#close-notes {
+  background: #333;
+  border: 1px solid #555;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+#close-notes:hover {
+  background: #444;
+}
+
+input[type="file"] { display: none; }
+
+.space-between {
+  flex: 1;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <button onclick="loadTemplate()">Template</button>
+  <button onclick="previewHTML()">Preview</button>
+  <button onclick="exportHTML()">Export</button>
+  <button onclick="clearEditor()">Clear</button>
+  <button onclick="toggleTerminal()">Terminal</button>
+
+  <label>
+    Import
+    <input type="file" accept=".html,.txt" onchange="importFile(this)">
+  </label>
+
+  <div class="space-between"></div>
+
+  <button onclick="toggleNotes()">Notes</button>
+</header>
+
+<div id="editor-wrapper">
+  <pre id="lineNumbers">1</pre>
+  <textarea id="editor" spellcheck="false"></textarea>
+</div>
+
+<div id="terminal"></div>
+
+<div id="notes-panel">
+  <div id="notes-header">
+    <span>Notes</span>
+    <button id="close-notes" onclick="toggleNotes()">Close</button>
+  </div>
+  <textarea id="notes-editor" placeholder="Write your notes here..."></textarea>
+</div>
+
+<script>
+const editor = document.getElementById("editor");
+const lineNumbers = document.getElementById("lineNumbers");
+const terminal = document.getElementById("terminal");
+const notesPanel = document.getElementById("notes-panel");
+const notesEditor = document.getElementById("notes-editor");
+
+/* ---------- TEMPLATE ---------- */
+const TEMPLATE_HTML = `<!DOCTYPE html>
+<html>
+<head>
+<title>My App</title>
+</head>
+<body>
+
+<h1>Hello world</h1>
+
+<script>
+  console.log("loaded")
+  // try breaking this:
+  // undefinedFunction()
+<\/script>
+
+</body>
+</html>`;
+
+/* ---------- LINE NUMBERS ---------- */
+function updateLineNumbers() {
+  const lines = editor.value.split("\n").length;
+  lineNumbers.textContent = Array.from({length: lines}, (_, i) => i + 1).join("\n");
+}
+
+editor.addEventListener("input", updateLineNumbers);
+editor.addEventListener("scroll", () => {
+  lineNumbers.scrollTop = editor.scrollTop;
+});
+
+/* ---------- TERMINAL ---------- */
+function toggleTerminal() {
+  terminal.style.display = terminal.style.display === "none" ? "block" : "none";
+}
+
+function logTerminal(msg, ok=false) {
+  terminal.className = ok ? "ok" : "";
+  terminal.textContent = msg;
+  terminal.style.display = "block";
+}
+
+/* ---------- NOTES PANEL ---------- */
+function toggleNotes() {
+  notesPanel.classList.toggle("active");
+  // Load notes from localStorage if available
+  if (notesPanel.classList.contains("active") && !notesEditor.value) {
+    notesEditor.value = localStorage.getItem("editorNotes") || "";
+  }
+}
+
+// Auto-save notes to localStorage
+notesEditor.addEventListener("input", () => {
+  localStorage.setItem("editorNotes", notesEditor.value);
+});
+
+/* ---------- FUNCTIONS ---------- */
+function loadTemplate() {
+  if (editor.value.trim() && !confirm("Replace current code?")) return;
+  editor.value = TEMPLATE_HTML;
+  updateLineNumbers();
+}
+
+function clearEditor() {
+  if (!editor.value.trim()) return;
+  if (confirm("Clear everything?")) {
+    editor.value = "";
+    updateLineNumbers();
+  }
+}
+
+function previewHTML() {
+  terminal.textContent = "";
+  const win = window.open("", "_blank");
+
+  const wrapped = `
+<script>
+window.onerror = function(msg, src, line, col) {
+  opener.postMessage({
+    error: msg,
+    line: line,
+    column: col
+  }, "*");
+};
+<\/script>
+${editor.value}`;
+
+  win.document.open();
+  win.document.write(wrapped);
+  win.document.close();
+
+  logTerminal("Program running (no errors yet)", true);
+}
+
+function exportHTML() {
+  const blob = new Blob([editor.value], { type: "text/html" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = getTitle() || "app.html";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    editor.value = e.target.result;
+    updateLineNumbers();
+  };
+  reader.readAsText(file);
+}
+
+/* ---------- ERROR CAPTURE ---------- */
+window.addEventListener("message", e => {
+  if (e.data?.error) {
+    logTerminal(
+      `ERROR: ${e.data.error}\nStopped at line ${e.data.line}, column ${e.data.column}`
+    );
+  }
+});
+
+/* ---------- AUTO FILENAME ---------- */
+function getTitle() {
+  const match = editor.value.match(/<title>(.*?)<\/title>/i);
+  return match ? match[1].replace(/[^\w\d]+/g, "_") + ".html" : null;
+}
+
+// Load saved notes on startup
+notesEditor.value = localStorage.getItem("editorNotes") || "";
+
+updateLineNumbers();
+</script>
+
+</body>
+</html>
