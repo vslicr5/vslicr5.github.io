@@ -1,0 +1,2688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VslicR5 | Friday Night Funkin' Modding tools</title>
+<link rel="shortcut icon" type="image/png" href="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/Untitled93_20260128131220.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VslicR5">
+
+<style>
+/* GENERAL RESET */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+textarea, input { -webkit-user-select: text; user-select: text; }
+
+html, body { overscroll-behavior: none; touch-action: manipulation; }
+
+body {
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: #eee;
+  margin: 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* DASHBOARD */
+#dashboard-container {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+#dashboard-icon {
+  width: 35px;
+  height: 35px;
+  image-rendering: pixelated;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+#dashboard-icon:hover { transform: scale(1.1); }
+
+#dashboard-menu {
+  display: none;
+  background: #1e1e1e;
+  border: 1px solid #444;
+  border-radius: 6px;
+  margin-top: 10px;
+  padding: 5px;
+  width: 150px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+#dashboard-menu a {
+  display: block;
+  padding: 10px;
+  color: #0f0;
+  text-decoration: none;
+  font-family: monospace;
+  font-size: 13px;
+  border-bottom: 1px solid #333;
+}
+#dashboard-menu a:last-child { border-bottom: none; }
+#dashboard-menu a:hover { background: #222; color: #fff; }
+
+/* LOGO */
+.logo-container {
+  width: 100%;
+  display: flex;
+  image-rendering: auto;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.logo-container img {
+  width: 160px;
+  height: 160px;
+  image-rendering: pixelated;
+  object-fit: contain;
+  cursor: pointer;
+}
+
+/* MAIN LAYOUT */
+.main-content { display: flex; width: 100%; gap: 12px; }
+textarea {
+  width: 320px;
+  height: 900px;
+  background: #1e1e1e;
+  color: #0f0;
+  border: 1px solid #444;
+  margin-top: 4px;
+  font-family: monospace;
+  font-size: 11px;
+  outline: none;
+}
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* CANVAS */
+canvas {
+  background: #000;
+  border: 1px solid #444;
+  width: 100%;
+  max-width: 950px;
+}
+.canvas-wrapper{
+  margin-top: 28px;
+}
+/* BUTTONS */
+button, .upload-btn {
+  width: 44px;
+  height: 44px;
+  background: #222;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+button:active, .upload-btn:active { background: #444; }
+button img, .upload-btn img { object-fit: contain; pointer-events: none; }
+.upload-btn input[type="file"] { display: none; }
+
+.row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+/* MOBILE GRID */
+.mobile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 10px;
+  background: #222;
+  padding: 15px;
+  border-radius: 8px;
+  width:950px;
+}
+.btn-group { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.pad { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.m-btn {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  background: transparent;
+  border: none;
+}
+.opponent-btn { background: rgba(153,0,0,0.2) !important; }
+.player-btn { background: rgba(0,85,255,0.2) !important; }
+.player-btn img { image-rendering: pixelated; width: 96px; height: 96px; }
+
+/* NOTE INFO */
+#noteInfo {
+  font-family: monospace;
+  font-size: 12px;
+  color: #0f0;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  padding: 6px;
+  border-radius: 4px;
+  width:950px;
+}
+
+/* TIME SCROLL */
+#timeScroll {
+  writing-mode: bt-lr;
+  -webkit-appearance: slider-vertical;
+  appearance: slider-vertical;
+  width: 22px;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  transform: rotate(180deg);
+}
+#timeScroll::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #0f0;
+  border-radius: 4px;
+}
+#timeScroll::-webkit-slider-runnable-track { background: #333; }
+
+/* RESPONSIVE */
+@media (max-width: 800px) {
+  body { flex-direction: column; }
+  .main-content { flex-direction: column; }
+  textarea { width: 100%; height: 200px; }
+  #dashboard-container { top: 10px; right: 10px; }
+}
+/* === FORCE BUTTON ICONS TO FILL BUTTON === */
+button,
+.upload-btn {
+  padding: 0;
+  overflow: hidden;       /* prevents spill */
+}
+
+/* image must have size for object-fit to work */
+button > img,
+.upload-btn > img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;    /* use cover if you want crop */
+  pointer-events: none;
+}
+/* === SHOELACE ALERT === */
+#difficulty-alert {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111;
+  border: 1px solid #0f0;
+  color: #0f0;
+  padding: 8px 14px;
+  font-family: monospace;
+  font-size: 12px;
+  border-radius: 6px;
+  z-index: 20000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+#difficulty-alert.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(4px);
+}
+
+/* ACTION ALERT (for undo/redo) */
+#action-alert {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111;
+  border: 1px solid #0f0;
+  color: #0f0;
+  padding: 8px 14px;
+  font-family: monospace;
+  font-size: 12px;
+  border-radius: 6px;
+  z-index: 20000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+#action-alert.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(4px);
+}
+
+.up-btns button img {
+  image-rendering: pixelated;
+ width:32px;
+height:32px;
+}
+.down-btns button img {
+  image-rendering: pixelated;
+ width:32px;
+height:32px;
+}
+
+.middle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #222;
+  width:950px;
+}
+
+.left-controls,
+.middle-controls,
+.right-controls {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.control-buttons-container {
+  display: flex;
+  gap: 20px; /* Space between the two groups */
+  align-items: center;
+  flex-wrap: nowrap; /* Prevents wrapping to next line */
+}
+
+.down-btns .row,
+.diff-btns {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.diff-btns {
+  padding-left: 200px;
+  margin-left: 200px;
+}
+.control-buttons-container {
+    background: #222;
+    width: 954px;
+    border-radius:10px;
+    margin-right: -2px;
+    margin-left: -3px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* also centers vertically */
+}
+.v1 {
+width: 100vw;
+height: 935px;
+background: #080708;
+}
+    #quoteWrapper {
+      position: relative;
+      width: 100vw;
+      height: 30px;
+      overflow: hidden;
+      background: #222;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    #quoteBox {
+      position: absolute;
+      white-space: nowrap;
+      font-weight: bold;
+      background: #222;
+      color: white;
+      transform: translateX(100%);
+      user-select: none;
+      cursor: default;
+      font-size: 1.0em;
+      font-family: monospace;
+    }
+#quoteBox {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.quote-sticker {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  vertical-align: middle;
+  pointer-events: none;
+}
+a {
+  text-decoration: none;
+  color: #fff;
+  font-family: monospace;
+  font-weight: 600;
+  margin: 5px;
+  display: inline-block;
+  transition: transform 0.3s;
+}
+
+a:hover {
+  color: red;
+  transform: scale(1.05);
+}
+textarea {
+margin-left:30px;
+}
+
+/* SAVE MODAL */
+#save-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+#save-modal-content {
+  background: #1e1e1e;
+  border: 1px solid #0f0;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 500px;
+  width: 90%;
+}
+
+#save-modal-content h3 {
+  color: #0f0;
+  margin-top: 0;
+  font-family: monospace;
+}
+
+#save-modal-content input {
+  width: 100%;
+  padding: 8px;
+  background: #111;
+  border: 1px solid #444;
+  color: #0f0;
+  font-family: monospace;
+  margin: 10px 0;
+}
+
+#save-modal-content .modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+#save-modal-content button {
+  width: auto;
+  padding: 8px 16px;
+  height: auto;
+}
+
+#saved-charts-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 10px 0;
+}
+
+.saved-chart-item {
+  background: #111;
+  border: 1px solid #333;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.saved-chart-item:hover {
+  background: #1a1a1a;
+  border-color: #0f0;
+}
+
+.saved-chart-name {
+  color: #0f0;
+  font-family: monospace;
+  flex: 1;
+}
+
+.saved-chart-type {
+  color: #888;
+  font-family: monospace;
+  font-size: 10px;
+  margin-left: 8px;
+  padding: 2px 6px;
+  background: #1a1a1a;
+  border-radius: 3px;
+}
+
+.saved-chart-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.saved-chart-actions button {
+  width: 32px;
+  height: 32px;
+  font-size: 12px;
+}
+
+/* SETTINGS MODAL */
+#settings-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+#settings-modal-content {
+  background: #1e1e1e;
+  border: 1px solid #0f0;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+#settings-modal-content h3 {
+  color: #0f0;
+  margin-top: 0;
+  font-family: monospace;
+}
+
+.setting-group {
+  margin: 15px 0;
+  padding: 10px;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 4px;
+}
+
+.setting-group label {
+  display: block;
+  color: #0f0;
+  font-family: monospace;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.setting-group input,
+.setting-group select {
+  width: 100%;
+  padding: 8px;
+  background: #000;
+  border: 1px solid #444;
+  color: #0f0;
+  font-family: monospace;
+  margin: 5px 0;
+}
+
+.setting-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.setting-row input {
+  flex: 1;
+}
+
+.warning-text {
+  color: #ff3333;
+  font-size: 11px;
+  margin-top: 5px;
+  font-family: monospace;
+}
+
+/* CHART TYPE TABS */
+#chart-type-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: -4px;
+  margin-left: 30px;
+}
+
+.chart-tab {
+  padding: 8px 20px;
+  background: #111;
+  border: 1px solid #444;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  color: #666;
+  font-family: monospace;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: auto;
+  width: auto;
+}
+
+.chart-tab:hover {
+  background: #1a1a1a;
+  color: #888;
+}
+
+.chart-tab.active {
+  background: #1e1e1e;
+  color: #0f0;
+  border-color: #444;
+}
+img[src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/images/import.png"] {
+  image-rendering: pixelated;
+  width:32px;
+  height:32px;
+}
+img[src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/images/music.png"] {
+  image-rendering: pixelated;
+  width:32px;
+  height:32px;
+}
+</style>
+</head>
+
+<body>
+<div class="logo-container" id="logoWrapper">
+
+<!-- DASHBOARD -->
+<div id="dashboard-container">
+  <img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/icons/dashboard.png" id="dashboard-icon" alt="Dashboard" onclick="toggleDashboard()">
+  <div id="dashboard-menu">
+    <a href="https://mcmattyobriore.github.io./vslicr5/system/pages/ogg/index.html">OGG Converter</a>
+  </div>
+</div>
+
+<!-- LOGO -->
+  <img title="click me to hide :)" src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/Untitled93_20260128131220.png" alt="VslicR5 Logo" onclick="this.parentElement.style.display='none'">
+</div>
+
+<!-- MARQUEE HEADING SHII -->
+  <div id="quoteWrapper">
+    <p id="quoteBox">Loading...</p>
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const wrapper = document.getElementById("quoteWrapper");
+  const box = document.getElementById("quoteBox");
+
+  let quotes = [
+    "Yeezy Night Funkin' Now Avaliable on Gamebanana! https://gamebanana.com/mods/636667",
+    "Use the wiki to learn more about vslicr5 & polymod v-slice modding for Friday Night Funkin'",
+    "need help? click '?' to find shortcuts and to learn proper formating!",
+    "use the library to import existing songs and to update charts & metadata",
+    "meta data and charts should be placed in 'mods/(mod-title)/data/songs'",
+    "n & m short cuts are to manually scroll across the chart, not to edit the notes positions, click on a note and drag them to the desired location",
+    "control + z to undo & control + x to redo!",
+    "length controls how long a note is held while property is used for note types",
+    "learn about camera positioning in '?' to make for better charts!",
+    "find the v slice mod template at the vslicr5 wiki! https://vslicr5.github.io./wiki/index.html",
+    "follow the official vslicr5 twitter at https://x.com/rh5psody?s=21",
+    "support vslicr5 by following the official youtube for tutorials, showcases, and recommendations! https://youtube.com/@rhap5ody?si=9GvhKeGOhWNXPZ5X"
+  ];
+
+  let pos = 0;
+  let lastTime = null;
+
+  const baseSpeed = 120;
+  const slowSpeed = 70;
+  const slowerSpeed = 30;
+
+  let currentSpeed = baseSpeed;
+  let isHoveringBox = false;
+  let isHoveringText = false;
+  let isMouseDown = false;
+
+  function parseQuoteWithImages(text) {
+    return text.replace(
+      /:([a-zA-Z0-9_\-\/]+(?:\.(png|gif|webp|jpg|jpeg))?):/gi,
+      (match, path, ext) => {
+        if (path.includes("..")) return match;
+
+        if (ext) {
+          return `
+            <img
+              src="https://raw.githubusercontent.com/01110010-00110101/01110010-00110101.github.io/main/system/images/stickers/${path}"
+              class="quote-sticker"
+              alt="${path}"
+              loading="lazy"
+            >
+          `;
+        }
+
+        return `
+          <img
+            src="https://raw.githubusercontent.com/01110010-00110101/01110010-00110101.github.io/main/system/images/stickers/${path}.png"
+            class="quote-sticker"
+            alt="${path}"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/01110010-00110101/01110010-00110101.github.io/main/system/images/stickers/${path}.gif';"
+          >
+        `;
+      }
+    );
+  }
+
+  function setQuote() {
+    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+    box.innerHTML = parseQuoteWithImages(quote);
+    pos = wrapper.offsetWidth;
+    box.style.transform = `translateX(${pos}px)`;
+  }
+
+  function updateSpeed() {
+    if (isMouseDown) currentSpeed = 0;
+    else if (isHoveringText) currentSpeed = slowerSpeed;
+    else if (isHoveringBox) currentSpeed = slowSpeed;
+    else currentSpeed = baseSpeed;
+  }
+
+  function animate(time) {
+    if (lastTime !== null) {
+      const dt = (time - lastTime) / 1000;
+      pos -= currentSpeed * dt;
+      box.style.transform = `translateX(${pos}px)`;
+
+      if (pos + box.offsetWidth < 0) {
+        setQuote();
+      }
+    }
+    lastTime = time;
+    requestAnimationFrame(animate);
+  }
+
+  function start() {
+    setQuote();
+    requestAnimationFrame(animate);
+  }
+
+  wrapper.addEventListener("mouseenter", () => {
+    isHoveringBox = true;
+    updateSpeed();
+  });
+
+  wrapper.addEventListener("mouseleave", () => {
+    isHoveringBox = false;
+    isHoveringText = false;
+    updateSpeed();
+  });
+
+  box.addEventListener("mouseenter", () => {
+    isHoveringText = true;
+    updateSpeed();
+  });
+
+  box.addEventListener("mouseleave", () => {
+    isHoveringText = false;
+    updateSpeed();
+  });
+
+  wrapper.addEventListener("mousedown", () => {
+    isMouseDown = true;
+    updateSpeed();
+  });
+
+  wrapper.addEventListener("mouseup", () => {
+    isMouseDown = false;
+    updateSpeed();
+  });
+
+  start();
+});
+</script>
+
+<div class="v1">
+<!-- MAIN CONTENT -->
+<div class="main-content">
+  <!-- CHART TYPE TABS -->
+  <div style="display: flex; flex-direction: column;">
+    <div id="chart-type-tabs">
+      <button class="chart-tab active" onclick="switchChartType('chart')">Chart</button>
+      <button class="chart-tab" onclick="switchChartType('metadata')">Metadata</button>
+    </div>
+    <textarea id="jsonInput" spellcheck="false"></textarea>
+  </div>
+
+  <div class="right">
+    <div class="canvas-wrapper">
+      <canvas id="chart" width="900" height="400"></canvas>
+      <input id="timeScroll" type="range" min="0" max="0" value="0">
+    </div>
+
+    <div id="noteInfo">Selected note: none</div>
+
+    <div class="row">
+
+<canvas id="audioViz" width="900" height="160"></canvas>
+
+    </div>
+
+<div class="middle">
+  <div class="left-controls">
+    <button onclick="seekTime(-100)" title="subtract 100 ms">-100ms</button>
+    <button onclick="seekTime(100)" title="add 100 ms">+100ms</button>
+  </div>
+  
+  <div class="middle-controls">
+    <span id="timeLabel">Time: 0 ms - 0 ms</span>
+  </div>
+  
+  <div class="right-controls">
+    <button title="play chart & audio" onclick="playAudio()"><img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/images/play.png"></button>
+    <button title="pause chart" onclick="pauseAudio()"><img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/images/pause.png"></button>
+    <button title="return to 0 ms" onclick="stopAudio()"><img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/images/returntozero.png"></button>
+  </div>
+</div>
+
+    <!-- MOBILE GRID: OPPONENT & PLAYER -->
+    <div class="mobile-grid">
+      <div class="btn-group">
+        <small>OPPONENT (WASD)</small>
+        <div class="pad">
+          <button class="m-btn opponent-btn" onmousedown="addNote(4)">A</button>
+          <button class="m-btn opponent-btn" onmousedown="addNote(5)">S</button>
+          <button class="m-btn opponent-btn" onmousedown="addNote(6)">W</button>
+          <button class="m-btn opponent-btn" onmousedown="addNote(7)">D</button>
+        </div>
+      </div>
+      <div class="btn-group">
+        <small>PLAYER (Arrows)</small>
+        <div class="pad">
+          <button class="m-btn player-btn" onmousedown="addNote(0)">
+            <img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/button-arrows/leftBIG.png">
+          </button>
+          <button class="m-btn player-btn" onmousedown="addNote(1)">
+            <img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/button-arrows/downBIG.png">
+          </button>
+          <button class="m-btn player-btn" onmousedown="addNote(2)">
+            <img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/button-arrows/upBIG.png">
+          </button>
+          <button class="m-btn player-btn" onmousedown="addNote(3)">
+            <img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/button-arrows/rightBIG.png">
+          </button>
+        </div>
+      </div>
+    </div>
+
+<!-- bottom btns -->
+<div class="control-buttons-container">
+<div class="down-btns">
+    <div class="row">
+      <button title="reset ur chart?" onclick="if(confirm('Are you sure you want to reset the chart?')){ resetToDefault(); }"
+        onmouseenter="this.querySelector('img').src='https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/trash/trash_eager.png'"
+        onmouseleave="this.querySelector('img').src='https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/trash/trash_closed.png'">
+        <img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/trash/trash_closed.png" alt="Trash"/>
+      </button>
+      <button title="save your current chart" onclick="openSaveModal()">
+        <img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/images/save.png" alt="save" />
+      </button>
+      <button title="export your chart?" onclick="exportJSON()"><img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/images/export.png"/></button>
+      <button title="explore library?" onclick="openLibrary()"><img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/images/library.png"/></button>
+      <button id="expNColTxtarea" title="click here to expand or close the textarea" onclick="expandNCollapseTextarea()"><img src="collapse.png"/></button>
+      <button title="settings" onclick="openSettings()"><img src="settings.png"/></button>
+      </div>
+</div>
+<div class="diff-btns">
+      <label class="upload-btn" title="import your charts here!">
+        <img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/images/import.png">
+        <input type="file" accept=".json,.txt" onchange="importJSON(this)" hidden>
+      </label>
+      <label class="upload-btn" title="import (ogg) or any audio type!!">
+        <img src="https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/images/music.png">
+        <input type="file" accept=".ogg,.wav,.mp3,audio/*" onchange="importAudio(this)" hidden>
+      </label>
+<!-- chart difficulties -->
+       <button id="btn-easy" title="chart easy" onclick="toggleDifficulty('easy')">
+        <img src="checked.png">
+       </button>
+
+       <button id="btn-normal" title="chart normal" onclick="toggleDifficulty('normal')">
+        <img src="checked.png">
+       </button>
+
+       <button id="btn-hard" title="chart hard" onclick="toggleDifficulty('hard')">
+       <img src="checked.png">
+      </button>
+     </div>
+</div>
+<!-- bottom btns end -->
+
+    <audio id="audio"></audio>
+  </div>
+</div>
+
+</div>
+
+<!-- SAVE MODAL -->
+<div id="save-modal">
+  <div id="save-modal-content">
+    <h3>Save Chart</h3>
+    <input type="text" id="save-name-input" placeholder="Enter chart name...">
+    <div class="modal-buttons">
+      <button onclick="closeSaveModal()">Cancel</button>
+      <button onclick="saveChartWithName()">Save</button>
+    </div>
+    <h3 style="margin-top: 20px;">Saved Charts</h3>
+    <div id="saved-charts-list"></div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-modal">
+  <div id="settings-modal-content">
+    <h3>Settings</h3>
+    
+    <div class="setting-group">
+      <h4 style="color: #0f0; margin-top: 0;">Time Navigation Shortcuts</h4>
+      <div class="setting-row">
+        <div style="flex: 1;">
+          <label>Backward Key (Default: N)</label>
+          <input type="text" id="backward-key" maxlength="1" value="n">
+        </div>
+        <div style="flex: 1;">
+          <label>Forward Key (Default: M)</label>
+          <input type="text" id="forward-key" maxlength="1" value="m">
+        </div>
+      </div>
+    </div>
+    
+    <div class="setting-group">
+      <h4 style="color: #0f0; margin-top: 0;">Time Step Amount (ms)</h4>
+      <label>
+        <input type="radio" name="step-mode" value="normal" checked onchange="updateStepMode()"> Normal Mode (-1000ms to +1000ms)
+      </label>
+      <input type="number" id="time-step-normal" min="-1000" max="1000" value="50" style="margin-top: 5px;">
+      
+      <label style="margin-top: 10px;">
+        <input type="radio" name="step-mode" value="advanced" onchange="updateStepMode()"> Advanced Mode (Any value)
+      </label>
+      <input type="number" id="time-step-advanced" value="50" disabled style="margin-top: 5px;">
+      <p class="warning-text">⚠️ Advanced mode may cause lag or crashes with extreme values!</p>
+    </div>
+    
+    <div class="modal-buttons">
+      <button onclick="closeSettings()">Close</button>
+      <button onclick="saveSettings()">Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACTION ALERT -->
+<div id="action-alert"></div>
+
+<footer>
+<a href="https://padlet.com/rhap5ody/devlog-u2ep63atfnqk705n">devlog</a>
+<a href="../system/download/index.html">download versions</a>
+<a href="../system/info/index.html">info</a>
+<a href="../system/socials/index.html">socials</a>
+<a>version: v0.2</a>
+
+</footer>
+<!-- library -->
+<script>
+/* ================================
+   LIBRARY WIDGET / MODAL (UPGRADED)
+================================ */
+
+(function () {
+
+  const LIBRARY_ITEMS = [
+    {
+      name: "bf.png",
+      type: "image",
+      content: null
+    },
+    {
+      name: "op.png",
+      type: "image",
+      content: null
+    },
+    {
+      name: "random-chart.json",
+      type: "text",
+      content: null
+    },
+    {
+      name: "Example Text",
+      type: "text",
+      content: "This is a preview of some text.\nYou can put chart data, notes, or descriptions here."
+    }
+  ];
+
+  const modal = document.createElement("div");
+  modal.id = "library-modal";
+  modal.innerHTML = `
+    <div id="library-backdrop"></div>
+    <div id="library-window">
+      <div id="library-header">
+        <span>Library</span>
+        <button id="library-close">✕</button>
+      </div>
+
+      <div id="library-body">
+        <div id="library-grid"></div>
+        <div id="library-preview">
+          <div id="library-preview-inner">
+            <small>Select an item to preview</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  const style = document.createElement("style");
+  style.textContent = `
+    #library-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: none;
+      font-family: monospace;
+    }
+
+    #library-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+    }
+
+    #library-window {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 900px;
+      height: 70%;
+      background: #1a1a1a;
+      border: 1px solid #444;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #library-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: #222;
+      border-bottom: 1px solid #333;
+      color: #0f0;
+    }
+
+    #library-header button {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    #library-body {
+      flex: 1;
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    #library-grid {
+      width: 40%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      overflow-y: auto;
+      align-content: flex-start;
+    }
+
+    .library-item {
+      width: 100px;
+      height: 120px;
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 6px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .library-item:hover {
+      background: #333;
+    }
+
+    .library-thumb {
+      width: 88px;
+      height: 88px;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 10px;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    .library-thumb img {
+      max-width: 100%;
+      max-height: 100%;
+      image-rendering: pixelated;
+    }
+
+    .library-name {
+      margin-top: 4px;
+      font-size: 11px;
+      color: #0f0;
+      text-align: center;
+      word-break: break-word;
+    }
+
+    #library-preview {
+      flex: 1;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 10px;
+      overflow: auto;
+      color: #eee;
+    }
+
+    #library-preview img {
+      max-width: 100%;
+      image-rendering: pixelated;
+    }
+
+    #library-preview pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  `;
+  document.head.appendChild(style);
+
+  const grid = modal.querySelector("#library-grid");
+  const preview = modal.querySelector("#library-preview-inner");
+
+  LIBRARY_ITEMS.forEach(item => {
+    const el = document.createElement("div");
+    el.className = "library-item";
+
+    const thumb = document.createElement("div");
+    thumb.className = "library-thumb";
+
+    if (item.type === "image") {
+      if (item.content) {
+        const img = document.createElement("img");
+        img.src = item.content;
+        thumb.appendChild(img);
+      } else {
+        thumb.textContent = "EMPTY IMG";
+      }
+    } else {
+      thumb.textContent = "JSON";
+    }
+
+    const name = document.createElement("div");
+    name.className = "library-name";
+    name.textContent = item.name;
+
+    el.appendChild(thumb);
+    el.appendChild(name);
+
+    el.onclick = () => {
+      if (!item.content) {
+        preview.innerHTML = `<small>Empty asset<br>No preview available.</small>`;
+        return;
+      }
+
+      if (item.type === "image") {
+        preview.innerHTML = `<img src="${item.content}">`;
+      } else {
+        preview.innerHTML = `<pre>${item.content}</pre>`;
+      }
+    };
+
+    grid.appendChild(el);
+  });
+
+  window.openLibrary = function () {
+    modal.style.display = "block";
+  };
+
+  modal.querySelector("#library-close").onclick = close;
+  modal.querySelector("#library-backdrop").onclick = close;
+
+  function close() {
+    modal.style.display = "none";
+  }
+
+})();
+</script>
+<!-- main logic -->
+<script>
+/* ================================
+   UNDO/REDO SYSTEM
+================================ */
+const undoStack = [];
+const redoStack = [];
+const MAX_UNDO_STACK = 50;
+
+function saveState(action) {
+  const state = {
+    chartData: JSON.parse(JSON.stringify(chartData)),
+    metadataData: JSON.parse(JSON.stringify(metadataData)),
+    selectedIndex: selectedIndex,
+    selectedNote: selectedNote ? [...selectedNote] : null,
+    currentTime: currentTime,
+    action: action
+  };
+  
+  undoStack.push(state);
+  if (undoStack.length > MAX_UNDO_STACK) {
+    undoStack.shift();
+  }
+  
+  // Clear redo stack when new action is performed
+  redoStack.length = 0;
+}
+
+function undo() {
+  if (undoStack.length === 0) {
+    showActionAlert("Nothing to undo");
+    return;
+  }
+  
+  // Save current state to redo stack
+  const currentState = {
+    chartData: JSON.parse(JSON.stringify(chartData)),
+    metadataData: JSON.parse(JSON.stringify(metadataData)),
+    selectedIndex: selectedIndex,
+    selectedNote: selectedNote ? [...selectedNote] : null,
+    currentTime: currentTime
+  };
+  redoStack.push(currentState);
+  
+  // Restore previous state
+  const prevState = undoStack.pop();
+  chartData = prevState.chartData;
+  metadataData = prevState.metadataData;
+  selectedIndex = prevState.selectedIndex;
+  selectedNote = prevState.selectedNote;
+  currentTime = prevState.currentTime;
+  
+  syncTextarea();
+  drawChart();
+  updateNoteInfo();
+  
+  showActionAlert(`Undid: ${prevState.action}`);
+}
+
+function redo() {
+  if (redoStack.length === 0) {
+    showActionAlert("Nothing to redo");
+    return;
+  }
+  
+  // Save current state to undo stack
+  const currentState = {
+    chartData: JSON.parse(JSON.stringify(chartData)),
+    metadataData: JSON.parse(JSON.stringify(metadataData)),
+    selectedIndex: selectedIndex,
+    selectedNote: selectedNote ? [...selectedNote] : null,
+    currentTime: currentTime,
+    action: "redo"
+  };
+  undoStack.push(currentState);
+  
+  // Restore next state
+  const nextState = redoStack.pop();
+  chartData = nextState.chartData;
+  metadataData = nextState.metadataData;
+  selectedIndex = nextState.selectedIndex;
+  selectedNote = nextState.selectedNote;
+  currentTime = nextState.currentTime;
+  
+  syncTextarea();
+  drawChart();
+  updateNoteInfo();
+  
+  showActionAlert("Redid action");
+}
+
+function showActionAlert(message) {
+  const alert = document.getElementById("action-alert");
+  alert.textContent = message;
+  alert.classList.add("show");
+  
+  setTimeout(() => {
+    alert.classList.remove("show");
+  }, 1500);
+}
+
+/* ================================
+   SETTINGS SYSTEM
+================================ */
+let settings = {
+  backwardKey: 'n',
+  forwardKey: 'm',
+  timeStep: 50,
+  stepMode: 'normal'
+};
+
+function loadSettings() {
+  const saved = localStorage.getItem('vslicr5_settings');
+  if (saved) {
+    settings = JSON.parse(saved);
+  }
+  updateSettingsUI();
+}
+
+function saveSettingsToStorage() {
+  localStorage.setItem('vslicr5_settings', JSON.stringify(settings));
+}
+
+function updateSettingsUI() {
+  document.getElementById('backward-key').value = settings.backwardKey;
+  document.getElementById('forward-key').value = settings.forwardKey;
+  
+  if (settings.stepMode === 'normal') {
+    document.querySelector('input[name="step-mode"][value="normal"]').checked = true;
+    document.getElementById('time-step-normal').value = settings.timeStep;
+    document.getElementById('time-step-normal').disabled = false;
+    document.getElementById('time-step-advanced').disabled = true;
+  } else {
+    document.querySelector('input[name="step-mode"][value="advanced"]').checked = true;
+    document.getElementById('time-step-advanced').value = settings.timeStep;
+    document.getElementById('time-step-normal').disabled = true;
+    document.getElementById('time-step-advanced').disabled = false;
+  }
+}
+
+function updateStepMode() {
+  const mode = document.querySelector('input[name="step-mode"]:checked').value;
+  
+  if (mode === 'normal') {
+    document.getElementById('time-step-normal').disabled = false;
+    document.getElementById('time-step-advanced').disabled = true;
+  } else {
+    document.getElementById('time-step-normal').disabled = true;
+    document.getElementById('time-step-advanced').disabled = false;
+  }
+}
+
+function openSettings() {
+  document.getElementById('settings-modal').style.display = 'flex';
+  updateSettingsUI();
+}
+
+function closeSettings() {
+  document.getElementById('settings-modal').style.display = 'none';
+}
+
+function saveSettings() {
+  const backKey = document.getElementById('backward-key').value.toLowerCase() || 'n';
+  const forwKey = document.getElementById('forward-key').value.toLowerCase() || 'm';
+  const mode = document.querySelector('input[name="step-mode"]:checked').value;
+  
+  let step;
+  if (mode === 'normal') {
+    step = parseInt(document.getElementById('time-step-normal').value) || 50;
+    step = Math.max(-1000, Math.min(1000, step));
+  } else {
+    step = parseInt(document.getElementById('time-step-advanced').value) || 50;
+  }
+  
+  settings.backwardKey = backKey;
+  settings.forwardKey = forwKey;
+  settings.timeStep = step;
+  settings.stepMode = mode;
+  
+  saveSettingsToStorage();
+  closeSettings();
+  showActionAlert("Settings saved!");
+}
+
+/* ================================
+   DASHBOARD TOGGLE
+================================ */
+function toggleDashboard() {
+  const menu = document.getElementById('dashboard-menu');
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+}
+
+window.onclick = function(event) {
+  if (!event.target.matches('#dashboard-icon')) {
+    const menu = document.getElementById('dashboard-menu');
+    if (menu.style.display === 'block') {
+      menu.style.display = 'none';
+    }
+  }
+};
+
+/* ================================
+   CHART TYPE SYSTEM
+================================ */
+let currentChartType = 'chart'; // 'chart' or 'metadata'
+
+// Default templates
+const DEFAULT_CHART_TEMPLATE = {
+  version: "2.0.0",
+  scrollSpeed: { easy: 1.8, normal: 2, hard: 2.2 },
+  events: [],
+  notes: { easy: [], normal: [], hard: [] },
+  generatedBy: "VslicR5 - FNF v0.8.0"
+};
+
+const DEFAULT_METADATA_TEMPLATE = {
+  version: "2.2.4",
+  songName: "title",
+  artist: "artist",
+  charter: "charter",
+  playData: {
+    characters: {
+      player: "bf",
+      girlfriend: "gf",
+      opponent: "dad",
+      instrumental: "",
+      altInstrumentals: []
+    },
+    songVariations: [""],
+    difficulties: ["easy", "normal", "hard"],
+    ratings: {
+      easy: 0,
+      normal: 1,
+      hard: 3
+    },
+    stage: "stage-id",
+    noteStyle: "default",
+    album: "album-id",
+    previewStart: 0,
+    previewEnd: 0
+  },
+  generatedBy: "VslicR5 - FNF 0.8.1",
+  timeFormat: "ms",
+  timeChanges: [
+    {
+      t: 0,
+      b: 0,
+      bpm: 120,
+      n: 4,
+      d: 4,
+      bt: [4, 4, 4, 4]
+    }
+  ]
+};
+
+function switchChartType(type) {
+  currentChartType = type;
+  
+  // Update tab active states
+  document.querySelectorAll('.chart-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  // Update textarea content
+  syncTextarea();
+}
+
+/* ================================
+   BINARY SAVE SYSTEM WITH INDEXEDDB
+================================ */
+const DB_NAME = "VslicR5_Charts";
+const STORE_NAME = "charts";
+const DB_VERSION = 1;
+
+function jsonToBinary(jsonObj) {
+  const jsonString = JSON.stringify(jsonObj);
+  return btoa(unescape(encodeURIComponent(jsonString)));
+}
+
+function binaryToJson(binaryString) {
+  const jsonString = decodeURIComponent(escape(atob(binaryString)));
+  return JSON.parse(jsonString);
+}
+
+function openDatabase() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: "name" });
+      }
+    };
+  });
+}
+
+async function saveChartToDB(name, chartData, metadataData, chartType) {
+  const db = await openDatabase();
+  const transaction = db.transaction([STORE_NAME], "readwrite");
+  const store = transaction.objectStore(STORE_NAME);
+  
+  const chartBinary = jsonToBinary(chartData);
+  const metadataBinary = jsonToBinary(metadataData);
+  
+  const saveData = {
+    name: name,
+    chartData: chartBinary,
+    metadataData: metadataBinary,
+    type: chartType,
+    timestamp: Date.now()
+  };
+  
+  return new Promise((resolve, reject) => {
+    const request = store.put(saveData);
+    request.onsuccess = () => {
+      console.log("Chart saved:", name);
+      resolve();
+    };
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function loadChartFromDB(name) {
+  const db = await openDatabase();
+  const transaction = db.transaction([STORE_NAME], "readonly");
+  const store = transaction.objectStore(STORE_NAME);
+  
+  return new Promise((resolve, reject) => {
+    const request = store.get(name);
+    request.onsuccess = () => {
+      if (request.result) {
+        const chartData = binaryToJson(request.result.chartData);
+        const metadataData = binaryToJson(request.result.metadataData);
+        const type = request.result.type || 'chart';
+        resolve({ chartData, metadataData, type });
+      } else {
+        reject(new Error("Chart not found"));
+      }
+    };
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function getAllCharts() {
+  const db = await openDatabase();
+  const transaction = db.transaction([STORE_NAME], "readonly");
+  const store = transaction.objectStore(STORE_NAME);
+  
+  return new Promise((resolve, reject) => {
+    const request = store.getAll();
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function deleteChartFromDB(name) {
+  const db = await openDatabase();
+  const transaction = db.transaction([STORE_NAME], "readwrite");
+  const store = transaction.objectStore(STORE_NAME);
+  
+  return new Promise((resolve, reject) => {
+    const request = store.delete(name);
+    request.onsuccess = () => {
+      console.log("Chart deleted:", name);
+      resolve();
+    };
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function exportBinaryChart(name, data, type) {
+  const binary = jsonToBinary(data);
+  const blob = new Blob([binary], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${name}-${type}_binary.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ================================
+   SAVE MODAL FUNCTIONS
+================================ */
+function openSaveModal() {
+  document.getElementById('save-modal').style.display = 'flex';
+  document.getElementById('save-name-input').value = '';
+  refreshSavedChartsList();
+}
+
+function closeSaveModal() {
+  document.getElementById('save-modal').style.display = 'none';
+}
+
+async function saveChartWithName() {
+  const name = document.getElementById('save-name-input').value.trim();
+  
+  if (!name) {
+    alert('Please enter a chart name!');
+    return;
+  }
+  
+  try {
+    await saveChartToDB(name, chartData, metadataData, currentChartType);
+    alert(`Chart "${name}" saved successfully!`);
+    refreshSavedChartsList();
+    document.getElementById('save-name-input').value = '';
+  } catch (error) {
+    console.error('Error saving chart:', error);
+    alert('Failed to save chart!');
+  }
+}
+
+async function refreshSavedChartsList() {
+  const listContainer = document.getElementById('saved-charts-list');
+  listContainer.innerHTML = '';
+  
+  try {
+    const charts = await getAllCharts();
+    
+    if (charts.length === 0) {
+      listContainer.innerHTML = '<p style="color: #666; text-align: center;">No saved charts yet</p>';
+      return;
+    }
+    
+    for (const chart of charts) {
+      const item = document.createElement('div');
+      item.className = 'saved-chart-item';
+      
+      const nameContainer = document.createElement('div');
+      nameContainer.style.display = 'flex';
+      nameContainer.style.alignItems = 'center';
+      nameContainer.style.flex = '1';
+      
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'saved-chart-name';
+      nameSpan.textContent = chart.name;
+      
+      const typeSpan = document.createElement('span');
+      typeSpan.className = 'saved-chart-type';
+      typeSpan.textContent = chart.type || 'chart';
+      
+      nameContainer.appendChild(nameSpan);
+      nameContainer.appendChild(typeSpan);
+      
+      const actions = document.createElement('div');
+      actions.className = 'saved-chart-actions';
+      
+      const loadBtn = document.createElement('button');
+      loadBtn.textContent = '📂';
+      loadBtn.title = 'Load';
+      loadBtn.onclick = () => loadSavedChart(chart.name);
+      
+      const exportChartBtn = document.createElement('button');
+      exportChartBtn.textContent = '📊';
+      exportChartBtn.title = 'Export chart as binary';
+      exportChartBtn.onclick = async () => {
+        try {
+          const data = await loadChartFromDB(chart.name);
+          exportBinaryChart(chart.name, data.chartData, 'chart');
+        } catch (error) {
+          console.error('Error exporting chart:', error);
+          alert('Failed to export chart!');
+        }
+      };
+      
+      const exportMetaBtn = document.createElement('button');
+      exportMetaBtn.textContent = '📋';
+      exportMetaBtn.title = 'Export metadata as binary';
+      exportMetaBtn.onclick = async () => {
+        try {
+          const data = await loadChartFromDB(chart.name);
+          exportBinaryChart(chart.name, data.metadataData, 'metadata');
+        } catch (error) {
+          console.error('Error exporting metadata:', error);
+          alert('Failed to export metadata!');
+        }
+      };
+      
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '🗑️';
+      deleteBtn.title = 'Delete';
+      deleteBtn.onclick = async () => {
+        if (confirm(`Delete chart "${chart.name}"?`)) {
+          try {
+            await deleteChartFromDB(chart.name);
+            refreshSavedChartsList();
+          } catch (error) {
+            console.error('Error deleting chart:', error);
+            alert('Failed to delete chart!');
+          }
+        }
+      };
+      
+      actions.appendChild(loadBtn);
+      actions.appendChild(exportChartBtn);
+      actions.appendChild(exportMetaBtn);
+      actions.appendChild(deleteBtn);
+      
+      item.appendChild(nameContainer);
+      item.appendChild(actions);
+      listContainer.appendChild(item);
+    }
+  } catch (error) {
+    console.error('Error loading saved charts:', error);
+    listContainer.innerHTML = '<p style="color: red;">Error loading saved charts</p>';
+  }
+}
+
+async function loadSavedChart(name) {
+  try {
+    const data = await loadChartFromDB(name);
+    
+    // Convert object format to array format if needed for chart data
+    ["easy", "normal", "hard"].forEach(diff => {
+      if (data.chartData.notes && data.chartData.notes[diff]) {
+        data.chartData.notes[diff] = data.chartData.notes[diff].map(note => {
+          if (note.t !== undefined) {
+            return [note.t, note.d, note.l, note.p];
+          }
+          return note;
+        });
+      }
+    });
+    
+    chartData = data.chartData;
+    metadataData = data.metadataData;
+    currentChartType = data.type;
+    
+    // Update tab
+    document.querySelectorAll('.chart-tab').forEach(tab => {
+      tab.classList.remove('active');
+      if (tab.textContent.toLowerCase() === currentChartType) {
+        tab.classList.add('active');
+      }
+    });
+    
+    syncTextarea();
+    drawChart();
+    closeSaveModal();
+    console.log(`Chart "${name}" loaded successfully`);
+  } catch (error) {
+    console.error('Error loading chart:', error);
+    alert('Failed to load chart!');
+  }
+}
+
+/* ================================
+   MAIN JS & CHART LOGIC
+================================ */
+// DOM Elements
+const jsonInput = document.getElementById("jsonInput");
+const canvas = document.getElementById("chart");
+const ctx = canvas.getContext("2d");
+const timeLabel = document.getElementById("timeLabel");
+const audio = document.getElementById("audio");
+const timeScroll = document.getElementById("timeScroll");
+const noteInfo = document.getElementById("noteInfo");
+
+// State Variables
+let chartData;
+let metadataData;
+let currentTime = 0;
+let playing = false;
+let audioUnlocked = false;
+let selectedNote = null;
+let selectedIndex = -1;
+let isDragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
+let dragStartTime = 0;
+let dragStartLane = 0;
+
+// Constants
+const ARROW_SIZE = 40;
+const ARROW_HALF = 20;
+const HOLD_WIDTH = 20;
+const SCROLL_MULT = 0.5;
+const HIT_WINDOW = 40;
+const LANE_WIDTH = 110;
+const LANE_OFFSET = 50;
+const LANE_SNAP_THRESHOLD = 35;
+
+const playerPaths = [
+  "https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/arrows/arrow_purple.png",
+  "https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/arrows/arrow_blue.png",
+  "https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/arrows/arrow_green.png",
+  "https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/arrows/arrow_red.png"
+];
+
+const opponentPaths = [
+  "https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/arrows/arrow_miss_purple.png",
+  "https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/arrows/arrow_miss_blue.png",
+  "https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/arrows/arrow_miss_green.png",
+  "https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/arrows/arrow_miss_red.png"
+];
+
+const hitImage = new Image();
+hitImage.src = "https://raw.githubusercontent.com/mcmattyobriore/vslicr5/main/system/arrows/hit.png";
+
+const playerImages = playerPaths.map(p => {
+  const i = new Image();
+  i.src = p;
+  return i;
+});
+
+const opponentImages = opponentPaths.map(p => {
+  const i = new Image();
+  i.src = p;
+  return i;
+});
+
+const rotations = [-Math.PI/2, Math.PI, 0, Math.PI/2];
+const laneColors = ["#C24B99", "#00FFFF", "#12FA05", "#F9393F"];
+
+// Initialize Chart Data
+chartData = JSON.parse(JSON.stringify(DEFAULT_CHART_TEMPLATE));
+metadataData = JSON.parse(JSON.stringify(DEFAULT_METADATA_TEMPLATE));
+
+// Load settings on startup
+loadSettings();
+
+/* ================================
+   HELPER FUNCTIONS
+================================ */
+function stringifyChart(d) {
+  const converted = JSON.parse(JSON.stringify(d));
+  
+  ["easy", "normal", "hard"].forEach(diff => {
+    if (converted.notes && converted.notes[diff]) {
+      converted.notes[diff] = converted.notes[diff].map(note => ({
+        t: note[0],
+        d: note[1],
+        l: note[2],
+        p: note[3]
+      }));
+    }
+  });
+  
+  let json = JSON.stringify(converted, null, 2);
+  
+  json = json.replace(/\{\s+"t":\s+(\d+),\s+"d":\s+(\d+),\s+"l":\s+(\d+),\s+"p":\s+(\[.*?\])\s+\}/gs, 
+    '{"t": $1, "d": $2, "l": $3, "p": $4}');
+  
+  return json;
+}
+
+function syncTextarea() {
+  if (currentChartType === 'chart') {
+    jsonInput.value = stringifyChart(chartData);
+  } else {
+    jsonInput.value = JSON.stringify(metadataData, null, 2);
+  }
+}
+
+function updateTimeLabel() {
+  const cur = Math.floor(currentTime);
+  const tot = audio.duration ? Math.floor(audio.duration * 1000) : 0;
+  timeLabel.textContent = `Time: ${cur} ms - ${tot} ms`;
+}
+
+function clampLength(v) {
+  const max = audio.duration ? audio.duration * 1000 : Infinity;
+  return Math.max(0, Math.min(v, max));
+}
+
+function clampTime(v) {
+  const max = audio.duration ? audio.duration * 1000 : Infinity;
+  return Math.max(0, Math.min(v, max));
+}
+
+function unlockAudio() {
+  if (audioUnlocked) return;
+  audioUnlocked = true;
+  audio.play().then(() => {
+    audio.pause();
+    audio.currentTime = 0;
+  }).catch(() => {});
+}
+
+/* ================================
+   LANE SNAPPING LOGIC
+================================ */
+function getNearestLane(mouseX) {
+  let nearestLane = -1;
+  let minDistance = Infinity;
+  
+  for (let lane = 0; lane < 8; lane++) {
+    const laneX = lane * LANE_WIDTH + LANE_OFFSET;
+    const distance = Math.abs(mouseX - laneX);
+    
+    if (distance < LANE_SNAP_THRESHOLD && distance < minDistance) {
+      minDistance = distance;
+      nearestLane = lane;
+    }
+  }
+  
+  return nearestLane;
+}
+
+/* ================================
+   AUDIO FUNCTIONS
+================================ */
+function importAudio(input) {
+  const f = input.files[0];
+  if (!f) return;
+  
+  unlockAudio();
+  audio.src = URL.createObjectURL(f);
+  audio.load();
+  
+  audio.onloadedmetadata = () => {
+    timeScroll.max = Math.floor(audio.duration * 1000);
+    currentTime = 0;
+    updateTimeLabel();
+    drawChart();
+  };
+}
+
+function playAudio() {
+  unlockAudio();
+  audio.play();
+  playing = true;
+}
+
+function pauseAudio() {
+  audio.pause();
+  playing = false;
+}
+
+function stopAudio() {
+  audio.pause();
+  audio.currentTime = 0;
+  currentTime = 0;
+  playing = false;
+  timeScroll.value = 0;
+  updateTimeLabel();
+  drawChart();
+}
+
+function seekTime(ms) {
+  unlockAudio();
+  currentTime = Math.max(0, currentTime + ms);
+  audio.currentTime = currentTime / 1000;
+  timeScroll.value = currentTime;
+  updateTimeLabel();
+  drawChart();
+}
+
+/* ================================
+   EVENT LISTENERS
+================================ */
+jsonInput.addEventListener("input", () => {
+  try {
+    const parsed = JSON.parse(jsonInput.value);
+    
+    if (currentChartType === 'chart' && parsed?.notes) {
+      ["easy", "normal", "hard"].forEach(diff => {
+        if (parsed.notes[diff]) {
+          parsed.notes[diff] = parsed.notes[diff].map(note => {
+            if (note.t !== undefined) {
+              return [note.t, note.d, note.l, note.p];
+            }
+            return note;
+          });
+        }
+      });
+      
+      chartData = parsed;
+      drawChart();
+    } else if (currentChartType === 'metadata') {
+      metadataData = parsed;
+    }
+  } catch(e) {}
+});
+
+audio.addEventListener("timeupdate", () => {
+  if (!playing) return;
+  currentTime = audio.currentTime * 1000;
+  timeScroll.value = currentTime;
+  updateTimeLabel();
+  drawChart();
+});
+
+timeScroll.addEventListener("input", () => {
+  currentTime = Number(timeScroll.value);
+  audio.currentTime = currentTime / 1000;
+  updateTimeLabel();
+  drawChart();
+});
+
+/* ================================
+   ADD NOTE
+================================ */
+function addNote(lane) {
+  saveState("Add note");
+  
+  const n = [Math.floor(currentTime), lane, 0, []];
+  
+  for (const d of ["easy", "normal", "hard"]) {
+    chartData.notes[d].push([...n]);
+  }
+  
+  chartData.notes.normal.sort((a, b) => a[0] - b[0]);
+  syncTextarea();
+  drawChart();
+}
+
+/* ================================
+   KEY HANDLING
+================================ */
+window.addEventListener("keydown", e => {
+  if (document.activeElement === jsonInput) return;
+  
+  // Check for settings modal inputs
+  if (document.getElementById('settings-modal').style.display === 'flex') {
+    return;
+  }
+  
+  const k = e.key.toLowerCase();
+  
+  // Undo/Redo
+  if (e.ctrlKey && k === 'z') {
+    e.preventDefault();
+    undo();
+    return;
+  }
+  
+  if (e.ctrlKey && k === 'x') {
+    e.preventDefault();
+    redo();
+    return;
+  }
+  
+  // Time navigation
+  if (k === settings.backwardKey) {
+    e.preventDefault();
+    seekTime(-settings.timeStep);
+    return;
+  }
+  
+  if (k === settings.forwardKey) {
+    e.preventDefault();
+    seekTime(settings.timeStep);
+    return;
+  }
+  
+  // Arrow key handling
+  if (selectedNote && selectedIndex >= 0) {
+    if (k === "arrowleft") {
+      e.preventDefault();
+      saveState("Move note left");
+      const newLane = Math.max(0, selectedNote[1] - 1);
+      for (const d of ["easy", "normal", "hard"]) {
+        if (chartData.notes[d][selectedIndex]) {
+          chartData.notes[d][selectedIndex][1] = newLane;
+        }
+      }
+      selectedNote[1] = newLane;
+      syncTextarea();
+      drawChart();
+      updateNoteInfo();
+      return;
+    }
+    
+    if (k === "arrowright") {
+      e.preventDefault();
+      saveState("Move note right");
+      const newLane = Math.min(7, selectedNote[1] + 1);
+      for (const d of ["easy", "normal", "hard"]) {
+        if (chartData.notes[d][selectedIndex]) {
+          chartData.notes[d][selectedIndex][1] = newLane;
+        }
+      }
+      selectedNote[1] = newLane;
+      syncTextarea();
+      drawChart();
+      updateNoteInfo();
+      return;
+    }
+    
+    if (k === "arrowup") {
+      e.preventDefault();
+      saveState("Move note up");
+      const newTime = clampTime(selectedNote[0] + settings.timeStep);
+      for (const d of ["easy", "normal", "hard"]) {
+        if (chartData.notes[d][selectedIndex]) {
+          chartData.notes[d][selectedIndex][0] = newTime;
+        }
+      }
+      selectedNote[0] = newTime;
+      
+      for (const d of ["easy", "normal", "hard"]) {
+        chartData.notes[d].sort((a, b) => a[0] - b[0]);
+      }
+      
+      const newIndex = chartData.notes.normal.findIndex(n => 
+        n[0] === selectedNote[0] && n[1] === selectedNote[1]
+      );
+      if (newIndex >= 0) {
+        selectedIndex = newIndex;
+      }
+      
+      syncTextarea();
+      drawChart();
+      updateNoteInfo();
+      return;
+    }
+    
+    if (k === "arrowdown") {
+      e.preventDefault();
+      saveState("Move note down");
+      const newTime = clampTime(selectedNote[0] - settings.timeStep);
+      for (const d of ["easy", "normal", "hard"]) {
+        if (chartData.notes[d][selectedIndex]) {
+          chartData.notes[d][selectedIndex][0] = newTime;
+        }
+      }
+      selectedNote[0] = newTime;
+      
+      for (const d of ["easy", "normal", "hard"]) {
+        chartData.notes[d].sort((a, b) => a[0] - b[0]);
+      }
+      
+      const newIndex = chartData.notes.normal.findIndex(n => 
+        n[0] === selectedNote[0] && n[1] === selectedNote[1]
+      );
+      if (newIndex >= 0) {
+        selectedIndex = newIndex;
+      }
+      
+      syncTextarea();
+      drawChart();
+      updateNoteInfo();
+      return;
+    }
+  } else {
+    // Only create notes if no note is selected
+    if (k === "arrowleft") { e.preventDefault(); addNote(0); }
+    else if (k === "arrowdown") { e.preventDefault(); addNote(1); }
+    else if (k === "arrowup") { e.preventDefault(); addNote(2); }
+    else if (k === "arrowright") { e.preventDefault(); addNote(3); }
+    else if (k === "a") addNote(4);
+    else if (k === "s") addNote(5);
+    else if (k === "w") addNote(6);
+    else if (k === "d") addNote(7);
+  }
+  
+  if (k === " ") {
+    e.preventDefault();
+    playing ? pauseAudio() : playAudio();
+  }
+});
+
+/* ================================
+   CANVAS MOUSE INTERACTIONS
+================================ */
+function getCanvasMousePos(e) {
+  const r = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / r.width;
+  const scaleY = canvas.height / r.height;
+  return {
+    x: (e.clientX - r.left) * scaleX,
+    y: (e.clientY - r.top) * scaleY
+  };
+}
+
+canvas.addEventListener("mousedown", e => {
+  const { x: mx, y: my } = getCanvasMousePos(e);
+  const cy = canvas.height / 2;
+  
+  selectedNote = null;
+  selectedIndex = -1;
+  
+  chartData.notes.normal.forEach((n, i) => {
+    const x = n[1] * LANE_WIDTH + LANE_OFFSET;
+    const y = cy - (n[0] - currentTime) * SCROLL_MULT;
+    
+    if (mx > x - 20 && mx < x + 20 && my > y - 20 && my < y + 20) {
+      selectedNote = n;
+      selectedIndex = i;
+      isDragging = true;
+      dragStartX = mx;
+      dragStartY = my;
+      dragStartTime = n[0];
+      dragStartLane = n[1];
+    }
+  });
+  
+  if (selectedNote) {
+    updateNoteInfo();
+    drawChart();
+  }
+});
+
+canvas.addEventListener("mousemove", e => {
+  if (!isDragging || selectedIndex < 0) return;
+  
+  const { x: mx, y: my } = getCanvasMousePos(e);
+  const cy = canvas.height / 2;
+  
+  const deltaY = dragStartY - my;
+  const timeChange = deltaY / SCROLL_MULT;
+  const newTime = clampTime(Math.floor(dragStartTime + timeChange));
+  
+  const newLane = getNearestLane(mx);
+  
+  if (newLane >= 0 && newLane <= 7) {
+    for (const d of ["easy", "normal", "hard"]) {
+      if (chartData.notes[d][selectedIndex]) {
+        chartData.notes[d][selectedIndex][0] = newTime;
+        chartData.notes[d][selectedIndex][1] = newLane;
+      }
+    }
+    
+    selectedNote[0] = newTime;
+    selectedNote[1] = newLane;
+    
+    updateNoteInfo();
+    syncTextarea();
+    drawChart();
+  }
+});
+
+canvas.addEventListener("mouseup", () => {
+  if (isDragging) {
+    saveState("Move note");
+    isDragging = false;
+    
+    for (const d of ["easy", "normal", "hard"]) {
+      chartData.notes[d].sort((a, b) => a[0] - b[0]);
+    }
+    
+    const newIndex = chartData.notes.normal.findIndex(n => 
+      n[0] === selectedNote[0] && n[1] === selectedNote[1]
+    );
+    
+    if (newIndex >= 0) {
+      selectedIndex = newIndex;
+    }
+    
+    syncTextarea();
+    drawChart();
+  }
+});
+
+canvas.addEventListener("mouseleave", () => {
+  if (isDragging) {
+    saveState("Move note");
+    isDragging = false;
+    
+    for (const d of ["easy", "normal", "hard"]) {
+      chartData.notes[d].sort((a, b) => a[0] - b[0]);
+    }
+    
+    syncTextarea();
+    drawChart();
+  }
+});
+
+canvas.addEventListener("click", e => {
+  if (isDragging) return;
+  
+  const { x: mx, y: my } = getCanvasMousePos(e);
+  const cy = canvas.height / 2;
+  
+  selectedNote = null;
+  selectedIndex = -1;
+  
+  chartData.notes.normal.forEach((n, i) => {
+    const x = n[1] * LANE_WIDTH + LANE_OFFSET;
+    const y = cy - (n[0] - currentTime) * SCROLL_MULT;
+    
+    if (mx > x - 20 && mx < x + 20 && my > y - 20 && my < y + 20) {
+      selectedNote = n;
+      selectedIndex = i;
+    }
+  });
+  
+  if (selectedNote) {
+    updateNoteInfo();
+  } else {
+    noteInfo.textContent = "Selected note: none";
+  }
+  
+  drawChart();
+});
+
+canvas.addEventListener("dblclick", () => {
+  if (selectedIndex < 0) return;
+  
+  saveState("Delete note");
+  
+  for (const d of ["easy", "normal", "hard"]) {
+    chartData.notes[d].splice(selectedIndex, 1);
+  }
+  
+  selectedIndex = -1;
+  selectedNote = null;
+  noteInfo.textContent = "Selected note: none";
+  syncTextarea();
+  drawChart();
+});
+
+/* ================================
+   UPDATE NOTE INFO
+================================ */
+function updateNoteInfo() {
+  if (!selectedNote) {
+    noteInfo.textContent = "Selected note: none";
+    return;
+  }
+  
+  const len = selectedNote[2] || 0;
+  const laneType = selectedNote[1] < 4 ? "Player" : "Opponent";
+  const direction = ["Left", "Down", "Up", "Right"][selectedNote[1] % 4];
+  
+  noteInfo.innerHTML = `
+    <div>Selected note: <b>${selectedNote[0]}ms</b> | lane <b>${selectedNote[1]}</b> (${laneType} - ${direction})</div>
+    <div style="margin-top:4px">Length: <input id="noteLengthInput" type="number" value="${len}" style="width:90px;background:#000;color:#0f0;border:1px solid #333;"> ms</div>
+  `;
+  
+  const input = document.getElementById("noteLengthInput");
+  
+  const commit = () => {
+    const v = clampLength(Number(input.value) || 0);
+    
+    saveState("Edit note length");
+    
+    for (const d of ["easy", "normal", "hard"]) {
+      if (chartData.notes[d][selectedIndex]) {
+        chartData.notes[d][selectedIndex][2] = v;
+      }
+    }
+    
+    syncTextarea();
+    drawChart();
+  };
+  
+  input.addEventListener("keydown", ev => {
+    if (ev.key === "Enter") {
+      ev.preventDefault();
+      commit();
+      input.blur();
+    }
+  });
+  
+  input.addEventListener("change", commit);
+}
+
+/* ================================
+   DRAW CHART
+================================ */
+function drawChart() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.imageSmoothingEnabled = false;
+  
+  const cy = canvas.height / 2;
+  
+  for (let i = 0; i < 8; i++) {
+    ctx.strokeStyle = "#333";
+    ctx.beginPath();
+    ctx.moveTo(i * LANE_WIDTH + LANE_OFFSET, 0);
+    ctx.lineTo(i * LANE_WIDTH + LANE_OFFSET, canvas.height);
+    ctx.stroke();
+  }
+  
+  ctx.strokeStyle = "#f00";
+  ctx.beginPath();
+  ctx.moveTo(0, cy);
+  ctx.lineTo(canvas.width, cy);
+  ctx.stroke();
+  
+  chartData.notes.normal.forEach(n => {
+    if (n[2] > 0) {
+      const x = n[1] * LANE_WIDTH + LANE_OFFSET;
+      const y = cy - (n[0] - currentTime) * SCROLL_MULT;
+      const h = n[2] * SCROLL_MULT;
+      
+      ctx.globalAlpha = 0.6;
+      ctx.fillStyle = laneColors[n[1] % 4];
+      ctx.fillRect(x - HOLD_WIDTH / 2, y - h, HOLD_WIDTH, h);
+      ctx.globalAlpha = 1;
+    }
+  });
+  
+  chartData.notes.normal.forEach((n, i) => {
+    const x = n[1] * LANE_WIDTH + LANE_OFFSET;
+    const y = cy - (n[0] - currentTime) * SCROLL_MULT;
+    
+    if (y < -50 || y > canvas.height + 50) return;
+    
+    const lane = n[1] % 4;
+    let img = n[1] < 4 ? playerImages[lane] : opponentImages[lane];
+    
+    if (Math.abs(n[0] - currentTime) <= HIT_WINDOW) {
+      img = hitImage;
+    }
+    
+    if (img.complete) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotations[lane]);
+      ctx.drawImage(img, -20, -20, 40, 40);
+      ctx.restore();
+    }
+    
+    if (i === selectedIndex) {
+      ctx.strokeStyle = "#ff0";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x - 24, y - 24, 48, 48);
+      ctx.lineWidth = 1;
+    }
+  });
+}
+
+// Initial setup
+syncTextarea();
+updateTimeLabel();
+drawChart();
+
+/* ================================
+   RESET / DELETE HANDLER
+================================ */
+window.resetToDefault = function() {
+  if (confirm("This will clear undo history. Continue?")) {
+    chartData = JSON.parse(JSON.stringify(DEFAULT_CHART_TEMPLATE));
+    metadataData = JSON.parse(JSON.stringify(DEFAULT_METADATA_TEMPLATE));
+    currentTime = 0;
+    selectedNote = null;
+    selectedIndex = -1;
+    playing = false;
+    audio.pause();
+    audio.currentTime = 0;
+    timeScroll.value = 0;
+    noteInfo.textContent = "Selected note: none";
+    
+    undoStack.length = 0;
+    redoStack.length = 0;
+    
+    syncTextarea();
+    updateTimeLabel();
+    drawChart();
+  }
+};
+
+/* ================================
+   TEXTAREA EXPAND / COLLAPSE WITH CENTERING
+================================ */
+function expandNCollapseTextarea() {
+  const btn = document.getElementById("expNColTxtarea");
+  const img = btn.querySelector("img");
+  const textarea = document.getElementById("jsonInput");
+  const tabs = document.getElementById("chart-type-tabs");
+  const v1Container = document.querySelector(".v1");
+  const isCollapsed = textarea.style.display === "none";
+  
+  if (!isCollapsed) {
+    img.src = "expand.png";
+    textarea.style.display = "none";
+    tabs.style.display = "none";
+    
+    v1Container.style.justifyContent = "center";
+    v1Container.style.alignItems = "center";
+    v1Container.style.width = "72vw";
+  } else {
+    img.src = "collapse.png";
+    textarea.style.display = "block";
+    tabs.style.display = "flex";
+    textarea.style.width = "320px";
+    textarea.style.height = "900px";
+    
+    v1Container.style.display = "";
+    v1Container.style.justifyContent = "";
+    v1Container.style.alignItems = "";
+    v1Container.style.width = "";
+  }
+}
+
+/* ================================
+   DIFFICULTY CHECKBOX SYSTEM
+================================ */
+const DIFF_ICON_CHECKED = "checked.png";
+const DIFF_ICON_UNCHECKED = "unchecked.png";
+
+let activeDifficulties = { easy: true, normal: true, hard: true };
+
+function selectAllDifficulties() {
+  activeDifficulties.easy = true;
+  activeDifficulties.normal = true;
+  activeDifficulties.hard = true;
+  updateDifficultyButtons();
+  syncTextarea();
+  drawChart();
+}
+
+const alertEl = document.createElement("div");
+alertEl.id = "difficulty-alert";
+alertEl.textContent = "Select a difficulty to start charting!";
+document.body.appendChild(alertEl);
+
+let alertTimeout = null;
+
+function showDifficultyAlert() {
+  alertEl.classList.add("show");
+  clearTimeout(alertTimeout);
+  alertTimeout = setTimeout(() => alertEl.classList.remove("show"), 1600);
+}
+
+function getActiveDifficulties() {
+  return Object.keys(activeDifficulties).filter(d => activeDifficulties[d]);
+}
+
+function toggleDifficulty(diff) {
+  activeDifficulties[diff] = !activeDifficulties[diff];
+  updateDifficultyButtons();
+  syncTextarea();
+  drawChart();
+}
+
+function updateDifficultyButtons() {
+  ["easy", "normal", "hard"].forEach(diff => {
+    const btn = document.getElementById("btn-" + diff);
+    if (!btn) return;
+    
+    const img = btn.querySelector("img");
+    if (!img) return;
+    
+    img.src = activeDifficulties[diff] ? DIFF_ICON_CHECKED : DIFF_ICON_UNCHECKED;
+  });
+}
+
+/* ================================
+   AUDIO VISUALIZER
+================================ */
+const vizCanvas = document.getElementById("audioViz");
+const vizCtx = vizCanvas.getContext("2d");
+
+let audioCtx, analyser, sourceNode, freqData, vizActive = false;
+const BLOCK_COUNT = 64;
+const BLOCK_GAP = 2;
+
+function initVisualizer() {
+  if (audioCtx) return;
+  
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 256;
+  freqData = new Uint8Array(analyser.frequencyBinCount);
+  sourceNode = audioCtx.createMediaElementSource(audio);
+  sourceNode.connect(analyser);
+  analyser.connect(audioCtx.destination);
+}
+
+function getBlockColor(v) {
+  return v < 85 ? "#ff3333" : v < 170 ? "#ffee33" : "#33ff33";
+}
+
+function drawVisualizer() {
+  if (!vizActive) return;
+  
+  requestAnimationFrame(drawVisualizer);
+  analyser.getByteFrequencyData(freqData);
+  vizCtx.clearRect(0, 0, vizCanvas.width, vizCanvas.height);
+  
+  const blockWidth = (vizCanvas.width - BLOCK_GAP * BLOCK_COUNT) / BLOCK_COUNT;
+  
+  for (let i = 0; i < BLOCK_COUNT; i++) {
+    const value = freqData[i];
+    const h = (value / 255) * vizCanvas.height;
+    vizCtx.fillStyle = getBlockColor(value);
+    vizCtx.fillRect(i * (blockWidth + BLOCK_GAP), vizCanvas.height - h, blockWidth, h);
+  }
+}
+
+const _playAudio = window.playAudio;
+window.playAudio = function() {
+  initVisualizer();
+  audioCtx.resume();
+  vizActive = true;
+  drawVisualizer();
+  _playAudio();
+};
+
+const _pauseAudio = window.pauseAudio;
+window.pauseAudio = function() {
+  vizActive = false;
+  _pauseAudio();
+};
+
+const _stopAudio = window.stopAudio;
+window.stopAudio = function() {
+  vizActive = false;
+  vizCtx.clearRect(0, 0, vizCanvas.width, vizCanvas.height);
+  _stopAudio();
+};
+
+const _importAudio = window.importAudio;
+window.importAudio = function(input) {
+  _importAudio(input);
+  setTimeout(() => {
+    if (audioCtx) audioCtx.resume();
+  }, 100);
+};
+
+/* ================================
+   EXPORT / IMPORT JSON
+================================ */
+function exportJSON() {
+  if (currentChartType === 'chart') {
+    const blob = new Blob([stringifyChart(chartData)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'name-chart.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  } else {
+    const blob = new Blob([JSON.stringify(metadataData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'name-metadata.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+}
+
+function importJSON(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      let data;
+      const content = e.target.result;
+      
+      try {
+        data = binaryToJson(content);
+        console.log("Imported binary chart");
+      } catch (binaryError) {
+        data = JSON.parse(content);
+        console.log("Imported JSON chart");
+      }
+      
+      // Detect type based on structure
+      if (data?.notes) {
+        ["easy", "normal", "hard"].forEach(diff => {
+          if (data.notes[diff]) {
+            data.notes[diff] = data.notes[diff].map(note => {
+              if (note.t !== undefined) {
+                return [note.t, note.d, note.l, note.p];
+              }
+              return note;
+            });
+          }
+        });
+        
+        chartData = data;
+        currentChartType = 'chart';
+      } else if (data?.songName || data?.playData) {
+        metadataData = data;
+        currentChartType = 'metadata';
+      }
+      
+      // Clear undo/redo on import
+      undoStack.length = 0;
+      redoStack.length = 0;
+      
+      // Update active tab
+      document.querySelectorAll('.chart-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.textContent.toLowerCase() === currentChartType) {
+          tab.classList.add('active');
+        }
+      });
+      
+      syncTextarea();
+      drawChart();
+      console.log("Chart imported and textarea updated successfully");
+    } catch (err) {
+      console.error("Failed to import chart:", err);
+      alert("Failed to import chart! Make sure it's a valid JSON or binary chart file.");
+    }
+  };
+  reader.readAsText(file);
+}
+</script>
+</body>
+</html>
