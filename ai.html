@@ -120,7 +120,7 @@
 <body>
 <header>
   <strong>Local AI (Browser-Only)</strong>
-  <div id="status">Preparing model…</div>
+  <div id="status">Downloading model… 0% (0 / 260 MB)</div>
   <div id="progressWrap">
     <div id="progressBar"></div>
   </div>
@@ -152,11 +152,18 @@
   }
 
   const MODEL = "Phi-3-mini-4k-instruct-q4f16_1";
+  const TOTAL_MB = 260; // Estimated total download size
+
+  progressBar.style.width = "0%";
 
   const engine = await CreateMLCEngine(MODEL, {
     initProgressCallback: (p) => {
-      const percent = Math.round(p * 100);
-      statusEl.textContent = `Downloading model… ${percent}%`;
+      const percent = Math.floor(p * 100);
+      const downloadedMB = Math.floor(p * TOTAL_MB);
+
+      statusEl.textContent =
+        `Downloading model… ${percent}% (${downloadedMB} / ${TOTAL_MB} MB)`;
+
       progressBar.style.width = percent + "%";
     }
   });
@@ -164,7 +171,6 @@
   statusEl.textContent = "Model ready";
   progressBar.style.width = "100%";
 
-  // Hide bar once loaded (optional but clean)
   setTimeout(() => {
     progressWrap.style.display = "none";
   }, 800);
