@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Local Browser AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<style>
+  * {
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  body {
+    margin: 0;
+    background: #0e0e0e;
+    color: #eee;
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 12px;
+    background: #151515;
+    border-bottom: 1px solid #222;
+  }
+
+  header strong {
+    display: block;
+    font-weight: 600;
+  }
+
+  #status {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 6px;
+  }
+
+  #progressWrap {
+    width: 100%;
+    height: 6px;
+    background: #222;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  #progressBar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+    transition: width 0.2s ease;
+  }
+
+  #chat {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .msg {
+    max-width: 80%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    line-height: 1.4;
+  }
+
+  .user {
+    align-self: flex-end;
+    background: #2563eb;
+  }
+
+  .ai {
+    align-self: flex-start;
+    background: #222;
+  }
+
+  footer {
+    padding: 12px;
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid #222;
+    background: #111;
+  }
+
+  textarea {
+    flex: 1;
+    resize: none;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: #1b1b1b;
+    color: #eee;
+  }
+
+  button {
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: none;
+    background: #22c55e;
+    color: #000;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
+</head>
+
+<body>
+<header>
+  <strong>Local AI (Browser-Only)</strong>
+  <div id="status">Preparing model…</div>
+  <div id="progressWrap">
+    <div id="progressBar"></div>
+  </div>
+</header>
+
+<div id="chat"></div>
+
+<footer>
+  <textarea id="input" rows="2" placeholder="Ask something…"></textarea>
+  <button id="send" disabled>Send</button>
+</footer>
+
+<script type="module">
+  import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm";
+
+  const chatEl = document.getElementById("chat");
+  const inputEl = document.getElementById("input");
+  const sendBtn = document.getElementById("send");
+  const statusEl = document.getElementById("status");
+  const progressBar = document.getElementById("progressBar");
+  const progressWrap = document.getElementById("progressWrap");
+
+  function addMessage(text, cls) {
+    const div = document.createElement("div");
+    div.className = `msg ${cls}`;
+    div.textContent = text;
+    chatEl.appendChild(div);
+    chatEl.scrollTop = chatEl.scrollHeight;
+  }
+
+  const MODEL = "Phi-3-mini-4k-instruct-q4f16_1";
+
+  const engine = await CreateMLCEngine(MODEL, {
+    initProgressCallback: (p) => {
+      const percent = Math.round(p * 100);
+      statusEl.textContent = `Downloading model… ${percent}%`;
+      progressBar.style.width = percent + "%";
+    }
+  });
+
+  statusEl.textContent = "Model ready";
+  progressBar.style.width = "100%";
+
+  // Hide bar once loaded (optional but clean)
+  setTimeout(() => {
+    progressWrap.style.display = "none";
+  }, 800);
+
+  sendBtn.disabled = false;
+
+  sendBtn.onclick = async () => {
+    const text = inputEl.value.trim();
+    if (!text) return;
+
+    inputEl.value = "";
+    addMessage(text, "user");
+    sendBtn.disabled = true;
+
+    try {
+      const res = await engine.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a concise local assistant. Prefer small fixes, explanations, and minimal rewrites."
+          },
+          { role: "user", content: text }
+        ],
+        temperature: 0.7
+      });
+
+      addMessage(res.choices[0].message.content, "ai");
+    } catch (e) {
+      addMessage("Error: " + e.message, "ai");
+    }
+
+    sendBtn.disabled = false;
+  };
+
+  inputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendBtn.click();
+    }
+  });
+</script>
+</body>
+</html>
